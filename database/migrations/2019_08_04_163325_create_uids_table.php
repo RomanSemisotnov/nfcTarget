@@ -13,7 +13,7 @@ class CreateUidsTable extends Migration
      */
     public function up()
     {
-        Schema::create('Uids', function (Blueprint $table) {
+        Schema::create('uids', function (Blueprint $table) {
             $table->increments('id');
             $table->string('value')->unique();
             $table->timestamps();
@@ -27,6 +27,6 @@ class CreateUidsTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('Uids');
+        Schema::dropIfExists('uids');
     }
 }
