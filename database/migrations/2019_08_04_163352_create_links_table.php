@@ -18,9 +18,9 @@ class CreateLinksTable extends Migration
             $table->string('uri');
 
             $table->integer('uid_id')->unsigned()->nullable();
-            $table->foreign('uid_id')
-                ->references('id')->on('uids')
-                ->onDelete('cascade');
+          //  $table->foreign('uid_id')
+         //       ->references('id')->on('uids')
+         //       ->onDelete('cascade');
 
             $table->integer('client_id')->unsigned();
             $table->foreign('client_id')
