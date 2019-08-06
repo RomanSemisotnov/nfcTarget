@@ -3,12 +3,14 @@
         <client-nav-bar></client-nav-bar>
         <el-row>
             <el-col :offset="3" :span="21">
-                <h2>{{client.name}}</h2>
+                <h2 style="display: inline-block;">{{client.name}}</h2>
+                <h2 style="display: inline-block;">-----</h2>
+                <h2 style="display: inline-block;">{{client.uri}}</h2>
             </el-col>
         </el-row>
 
         <el-row>
-            <el-col :offset="3" :span="22">
+            <el-col :offset="3" :span="19">
                 <el-table
                         :loading="isTableLoading"
                         :data="data"

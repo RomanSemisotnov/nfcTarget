@@ -4,7 +4,9 @@
 
         <el-row>
             <el-col :offset="3" :span="21">
-                <h2>{{client.name}}</h2>
+                <h2 style="display: inline-block;">{{client.name}}</h2>
+                <h2 style="display: inline-block;">-----</h2>
+                <h2 style="display: inline-block;">{{client.uri}}</h2>
             </el-col>
         </el-row>
 

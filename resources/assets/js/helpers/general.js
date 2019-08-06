@@ -19,7 +19,7 @@ export function initialize(store, router) {
             router.push({path: '/login'});
         }
 
-        return Promise.reject(error);
+        return Promise.resolve(error);
     });
 
     if (store.getters.currentUser) {
