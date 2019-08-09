@@ -24,7 +24,8 @@ class ClientController extends Controller
     {
         $client = Client::create([
             'name' => $request->input('name'),
-            'uri' => $request->input('redirectTo')
+            'uri' => $request->input('redirectTo'),
+            'subdomain' => $request->input('subdomain')
         ]);
         for ($i = 1; $i <= 5; $i++) {
             QueryParam::create([
@@ -36,5 +37,9 @@ class ClientController extends Controller
         return $client;
     }
 
+    public function update(Request $request, int $client_id)
+    {
+        return Client::findOrFail($client_id)->update($request->all());
+    }
 
 }

@@ -3,6 +3,7 @@ import login from './pages/login';
 import clientParams from './pages/clientParams';
 import clientPartions from './pages/clientPartions';
 import clientLinks from './pages/clientLinks';
+import clientSetting from './pages/clientSetting';
 import clientLinksWithUID from './pages/clientLinksWithUID';
 import addClient from './pages/addClient';
 
@@ -40,6 +41,14 @@ export const routes = [
         path: '/client/:name/partions',
         component: clientPartions,
         name: 'clientPartions',
+        meta: {
+            requiresAuth: true
+        }
+    },
+    {
+        path: '/client/:name/setting',
+        component: clientSetting,
+        name: 'clientSetting',
         meta: {
             requiresAuth: true
         }
