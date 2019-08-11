@@ -18,14 +18,6 @@
         </el-row>
 
         <el-row :gutter="24">
-            <el-col :offset="3" :span="14">
-                <el-form-item label="Страница редиректа">
-                    <el-input v-model="form.redirectTo"></el-input>
-                </el-form-item>
-            </el-col>
-        </el-row>
-
-        <el-row :gutter="24">
             <el-col :offset="9" :span="8">
                 <el-button :loading="isLoading" @click="create()" type="primary" round>Добавить</el-button>
             </el-col>
@@ -43,7 +35,6 @@
                 isLoading: false,
                 form: {
                     name: '',
-                    redirectTo: '',
                     subdomain: ''
                 }
             }

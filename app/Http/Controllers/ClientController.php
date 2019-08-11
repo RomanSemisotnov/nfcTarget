@@ -24,7 +24,6 @@ class ClientController extends Controller
     {
         $client = Client::create([
             'name' => $request->input('name'),
-            'uri' => $request->input('redirectTo'),
             'subdomain' => $request->input('subdomain')
         ]);
         for ($i = 1; $i <= 5; $i++) {

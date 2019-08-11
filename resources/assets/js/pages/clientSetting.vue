@@ -22,14 +22,6 @@
             </el-row>
 
             <el-row :gutter="24">
-                <el-col :offset="3" :span="14">
-                    <el-form-item label="Страница редиректа">
-                        <el-input v-model="client.uri"></el-input>
-                    </el-form-item>
-                </el-col>
-            </el-row>
-
-            <el-row :gutter="24">
                 <el-col :offset="9" :span="8">
                     <el-button :loading="isUpdate" @click="update()" type="primary" round>Добавить</el-button>
                 </el-col>
@@ -53,7 +45,6 @@
             return {
                 client: {
                     name: '',
-                    uri: '',
                     subdomain: ''
                 },
                 isUpdate: false
@@ -74,7 +65,6 @@
                 this.isUpdate = true;
                 axios.post('/api/client/update/' + this.client.id, {
                     name: this.client.name,
-                    uri: this.client.uri,
                     subdomain: this.client.subdomain
                 }).then(response => {
                     this.isUpdate = false;
