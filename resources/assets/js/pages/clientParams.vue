@@ -13,6 +13,7 @@
         <el-row>
             <el-col :span="23">
                 <el-table
+                        default-expand-all
                         v-loading="isTableLoading"
                         :data="client.params"
                         style="width: 100%">
