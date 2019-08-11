@@ -26,6 +26,8 @@ class CreateCorrectRequestsTable extends Migration
                 ->references('id')->on('devices')
                 ->onDelete('cascade');
 
+            $table->string('ip')->nullable();
+
             $table->timestamps();
         });
     }

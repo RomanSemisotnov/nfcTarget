@@ -16,7 +16,7 @@ class CreateClientsTable extends Migration
         Schema::create('clients', function (Blueprint $table) {
             $table->increments('id');
             $table->string('name')->unique();
-            $table->string('uri')->nullable();
+            $table->string('subdomain')->nullable()->unique();
             $table->timestamps();
         });
     }
