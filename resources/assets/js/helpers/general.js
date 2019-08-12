@@ -17,9 +17,10 @@ export function initialize(store, router) {
         if (error.response.status == 401) {
             store.commit('logout');
             router.push({path: '/login'});
+            return Promise.resolve(error);
         }
 
-        return Promise.resolve(error);
+        return Promise.reject(error);
     });
 
     if (store.getters.currentUser) {
