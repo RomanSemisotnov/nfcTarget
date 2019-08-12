@@ -38,7 +38,8 @@ class ClientController extends Controller
 
     public function update(Request $request, int $client_id)
     {
-        return Client::findOrFail($client_id)->update($request->all());
+        Client::findOrFail($client_id)->update($request->all());
+        return 'success';
     }
 
 }
