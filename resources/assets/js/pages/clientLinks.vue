@@ -30,7 +30,7 @@
                     </el-table-column>
                     <el-table-column
                             label="С токеном"
-                            width="90">
+                            width="115">
                         <template slot-scope="scope">
                             <el-button v-if="scope.row.withToken === 'yes'" type="primary" plain size="mini">Yes
                             </el-button>
@@ -42,7 +42,7 @@
                     <el-table-column
                             prop="created_at"
                             label="Дата"
-                            width="190">
+                            width="210">
                     </el-table-column>
 
                     <el-table-column
