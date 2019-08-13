@@ -5,8 +5,6 @@
         <el-row>
             <el-col :offset="3" :span="21">
                 <h2 style="display: inline-block;">{{client.name}}</h2>
-                <h2 style="display: inline-block;">-----</h2>
-                <h2 style="display: inline-block;">{{client.uri}}</h2>
             </el-col>
         </el-row>
 
@@ -15,7 +13,7 @@
             <el-col :offset="1" :span="22">
 
                 <el-card class="box-card">
-                    <el-row>
+                    <el-row type="flex">
                         <el-col :offset="1" :span="22">
                             <div style="display: inline-block"><h4>https://{{client.name}}.nfc-u.ru/</h4></div>
                             <div :key="index" v-for="(value, index) in client.params" style="display: inline-block">
@@ -36,15 +34,18 @@
                         </el-col>
                     </el-row>
 
-
-                    <el-row>
+                    <el-row type="flex">
                         <el-col :offset="1" :span="6">
-                            <el-input placeholder="Количество ссылок" v-model="countLinks"></el-input>
+                            <el-input placeholder="Редирект на" v-model="redirectTo"></el-input>
                         </el-col>
-                        <el-col :span="9">
+                    </el-row>
+
+                    <el-row type="flex">
+                        <el-col :offset="1" :span="9">
                             <el-button :loading="isAdding" type="primary" @click="addLinks()" plain>Добавить</el-button>
                         </el-col>
                     </el-row>
+
                 </el-card>
 
             </el-col>
@@ -66,7 +67,7 @@
             return {
                 client: {},
                 params: [{value: ''}, {value: ''}, {value: ''}, {value: ''}, {value: ''}],
-                countLinks: '',
+                redirectTo: '',
                 isAdding: false
             }
         },
@@ -75,26 +76,26 @@
         },
         methods: {
             addLinks() {
-                let myParams=[];
+                let myParams = [];
                 for (let index = 0; index < this.client.params.length; index++) {
-                    if (this.params[index].value.trim() && this.client.params[index].type !== 'token' ) {
+                    if (this.params[index].value.trim() && this.client.params[index].type !== 'token') {
                         myParams.push(this.params[index].value.trim());
-                    } else if(this.client.params[index].type === 'token'){
+                    } else if (this.client.params[index].type === 'token') {
                         myParams.push('token');
-                    }else{
-                        this.$message.error('Параметр ' + (index+1) + ' не назначен');
+                    } else {
+                        this.$message.error('Параметр ' + (index + 1) + ' не назначен');
                         return;
                     }
                 }
 
                 this.isAdding = true;
-                axios.post('/api/links', {
-                    count: this.countLinks,
+                axios.post('/api/patterns', {
                     client_id: this.client.id,
+                    redirectTo: this.redirectTo,
                     params: myParams
                 }).then(response => {
                     this.isAdding = false;
-                    this.$message.success('Успешно добавленно '+this.countLinks+' ссылки');
+                    this.$message.success('Успешно добавленно');
                 }).catch(reason => {
                     this.isAdding = false;
                     this.$message.error('Не удалось добавить ссылки');

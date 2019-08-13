@@ -1,10 +1,9 @@
 import index from './pages/index';
 import login from './pages/login';
 import clientParams from './pages/clientParams';
-import clientPartions from './pages/clientPartions';
+import clientPatternLinks from './pages/clientPatternLinks';
 import clientLinks from './pages/clientLinks';
 import clientSetting from './pages/clientSetting';
-import clientLinksWithUID from './pages/clientLinksWithUID';
 import addClient from './pages/addClient';
 
 export const routes = [
@@ -38,9 +37,9 @@ export const routes = [
         }
     },
     {
-        path: '/client/:name/partions',
-        component: clientPartions,
-        name: 'clientPartions',
+        path: '/client/:name/patterns',
+        component: clientPatternLinks,
+        name: 'clientPatternLinks',
         meta: {
             requiresAuth: true
         }
@@ -60,13 +59,5 @@ export const routes = [
         meta: {
             requiresAuth: true
         }
-    },
-    {
-        path: '/client/:name/linksWithUid',
-        component: clientLinksWithUID,
-        name: 'clientLinksWithUID',
-        meta: {
-            requiresAuth: true
-        }
-    },
+    }
 ];

@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Client;
+use App\ParamVariable;
 use App\QueryParam;
 use Illuminate\Http\Request;
 
@@ -27,10 +28,14 @@ class ClientController extends Controller
             'subdomain' => $request->input('subdomain')
         ]);
         for ($i = 1; $i <= 5; $i++) {
-            QueryParam::create([
+            $param=QueryParam::create([
                 'client_id' => $client->id,
                 'name' => '',
                 'index_number' => $i
+            ]);
+            ParamVariable::create([
+                'name' => 'all',
+                'QueryParam_id' => $param->id
             ]);
         }
         return $client;

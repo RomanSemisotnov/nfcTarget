@@ -2,9 +2,8 @@
     <el-menu :default-active="$route.path" class="el-menu-demo" mode="horizontal" @select="handleSelect">
         <el-menu-item :index="getRoute('setting')">Настройки</el-menu-item>
         <el-menu-item :index="getRoute('params')">Параметры</el-menu-item>
-        <el-menu-item :index="getRoute('partions')">Создание ссылок</el-menu-item>
-        <el-menu-item :index="getRoute('links')">Сырые ссылки</el-menu-item>
-        <el-menu-item :index="getRoute('linksWithUid')">Готовые ссылки</el-menu-item>
+        <el-menu-item :index="getRoute('patterns')">Шаблоны ссылок</el-menu-item>
+        <el-menu-item :index="getRoute('links')">Ссылки</el-menu-item>
     </el-menu>
 </template>
 

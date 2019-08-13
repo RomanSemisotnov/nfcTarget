@@ -16,6 +16,12 @@ class CreateUidsTable extends Migration
         Schema::create('uids', function (Blueprint $table) {
             $table->increments('id');
             $table->string('value')->unique();
+
+            $table->integer('patternlink_id')->unsigned();
+            $table->foreign('patternlink_id')
+                ->references('id')->on('pattern_links')
+                ->onDelete('cascade');
+
             $table->timestamps();
         });
     }

@@ -4,13 +4,11 @@
         <el-row>
             <el-col :offset="3" :span="21">
                 <h2 style="display: inline-block;">{{client.name}}</h2>
-                <h2 style="display: inline-block;">-----</h2>
-                <h2 style="display: inline-block;">{{client.uri}}</h2>
             </el-col>
         </el-row>
 
         <el-row>
-            <el-col :offset="3" :span="19">
+            <el-col :offset="2" :span="21">
                 <el-table
                         :loading="isTableLoading"
                         :data="data"
@@ -18,18 +16,43 @@
                     <el-table-column
                             prop="id"
                             label="#"
-                            width="100">
+                            width="60">
                     </el-table-column>
                     <el-table-column
-                            prop="uri"
+                            prop="value"
                             label="URL"
-                            width="550">
+                            width="300">
+                    </el-table-column>
+                    <el-table-column
+                            prop="redirectTo"
+                            label="Редирект"
+                            width="260">
+                    </el-table-column>
+                    <el-table-column
+                            label="С токеном"
+                            width="90">
+                        <template slot-scope="scope">
+                            <el-button v-if="scope.row.withToken === 'yes'" type="primary" plain size="mini">Yes
+                            </el-button>
+                            <el-button v-else-if="scope.row.withToken === 'no'" type="warning" plain size="mini">No
+                            </el-button>
+                            <span v-else>???(обратитесь к Роману)</span>
+                        </template>
                     </el-table-column>
                     <el-table-column
                             prop="created_at"
                             label="Дата"
-                            width="200">
+                            width="190">
                     </el-table-column>
+
+                    <el-table-column
+                            width="120">
+                        <template slot-scope="scope">
+                            <delete-client-link v-on:delete="deleteRow" :link_id="scope.row.id"
+                                                :index="scope.$index"></delete-client-link>
+                        </template>
+                    </el-table-column>
+
                 </el-table>
             </el-col>
         </el-row>
@@ -39,7 +62,7 @@
                 <el-pagination
                         background
                         layout="prev, pager, next"
-                        page-size="20"
+                        :page-size="20"
                         current-change
                         @current-change="changePage"
                         :total="totalLinks">
@@ -53,9 +76,12 @@
 <script>
     import axios from 'axios';
     import clientNavBar from './../components/clientNavBar';
+    import deleteLinkButton from './../components/buttons/deleteClientLink';
+    import DeleteClientLink from "../components/buttons/deleteClientLink";
 
     export default {
         components: {
+            DeleteClientLink,
             clientNavBar
         },
         data() {
@@ -71,6 +97,9 @@
             this.getClient();
         },
         methods: {
+            deleteRow(index) {
+                this.data.splice(index, 1);
+            },
             getClient() {
                 axios.get('/api/client/' + this.$route.params.name).then(response => {
                     this.client = response.data;
@@ -81,7 +110,7 @@
             },
             getLinks() {
                 this.isTableLoading = true;
-                axios.get('/api/links/' + this.client.id + '?page=' + this.currentPage + '&uid=without').then(response => {
+                axios.get('/api/patterns/' + this.client.id + '?page=' + this.currentPage).then(response => {
                     this.data = response.data.data;
                     this.totalLinks = response.data.total;
                     this.isTableLoading = false;

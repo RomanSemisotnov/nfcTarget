@@ -4,7 +4,7 @@ use Illuminate\Support\Facades\Schema;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
 
-class CreateLinksTable extends Migration
+class CreatePatternLinksTable extends Migration
 {
     /**
      * Run the migrations.
@@ -13,14 +13,12 @@ class CreateLinksTable extends Migration
      */
     public function up()
     {
-        Schema::create('links', function (Blueprint $table) {
+        Schema::create('pattern_links', function (Blueprint $table) {
             $table->increments('id');
-            $table->string('uri');
 
-            $table->integer('uid_id')->unsigned()->nullable();
-            $table->foreign('uid_id')
-                ->references('id')->on('uids')
-                ->onDelete('cascade');
+            $table->string('value');
+            $table->string('redirectTo');
+            $table->string('withToken')->default('no');
 
             $table->integer('client_id')->unsigned();
             $table->foreign('client_id')
@@ -38,6 +36,6 @@ class CreateLinksTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('links');
+        Schema::dropIfExists('pattern_links');
     }
 }

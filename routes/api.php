@@ -38,9 +38,10 @@ Route::group(['middleware' => 'jwt.auth'], function ($router) {
         Route::post('/delete/{id}', 'VariableParamController@delete');
     });
 
-    Route::group(['prefix' => 'links'], function ($router) {
-        Route::get('/{client_id}', 'LinksController@get');
-        Route::post('/', 'LinksController@store');
+    Route::group(['prefix' => 'patterns'], function ($router) {
+        Route::get('/{client_id}', 'PatternsController@get');
+        Route::post('/', 'PatternsController@store');
+        Route::post('/delete/{id}', 'PatternsController@delete');
     });
 
 });
