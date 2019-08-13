@@ -15,7 +15,7 @@
                 <el-card class="box-card">
                     <el-row type="flex">
                         <el-col :offset="1" :span="22">
-                            <div style="display: inline-block"><h4>https://{{client.name}}.nfc-u.ru/</h4></div>
+                            <div style="display: inline-block"><h4>https://{{client.subdomain}}.nfc-u.ru/</h4></div>
                             <div :key="index" v-for="(value, index) in client.params" style="display: inline-block">
                                 <el-select v-if="value.variables.length && value.type !== 'token'"
                                            v-model="params[index].value"

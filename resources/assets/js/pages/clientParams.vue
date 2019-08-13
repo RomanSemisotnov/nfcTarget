@@ -40,7 +40,7 @@
                     <el-table-column type="expand">
                         <template slot-scope="scope" v-if="scope.row.type !== 'token'">
                             <el-button-group :key="index" v-for="(varialbe, index) in scope.row.variables">
-                                <el-button type="primary" plain>{{varialbe.name}}</el-button>
+                                <el-button type="primary" plain>{{varialbe.name}}==>{{varialbe.requests_count}}</el-button>
                                 <el-button type="primary" :loading="isDeleting"
                                            @click="deleteVariable(varialbe.id, scope.$index)"
                                            icon="el-icon-delete"></el-button>

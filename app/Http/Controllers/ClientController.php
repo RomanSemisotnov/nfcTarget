@@ -17,7 +17,11 @@ class ClientController extends Controller
 
     public function get(string $name)
     {
-        $client = Client::whereName($name)->with('params.variables')->first();
+        $client = Client::whereName($name)->with(['params' =>function ($query){
+            $query->with(['variables' => function($query1){
+                $query1->withCount('requests');
+            }]);
+        }])->first();
         return $client;
     }
 
