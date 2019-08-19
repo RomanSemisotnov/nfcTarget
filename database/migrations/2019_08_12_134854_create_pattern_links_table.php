@@ -18,7 +18,6 @@ class CreatePatternLinksTable extends Migration
 
             $table->string('value');
             $table->string('redirectTo');
-            $table->string('withToken')->default('no');
 
             $table->integer('client_id')->unsigned();
             $table->foreign('client_id')

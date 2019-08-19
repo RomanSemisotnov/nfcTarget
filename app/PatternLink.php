@@ -8,7 +8,7 @@ class PatternLink extends Model
 {
 
 
-    protected $fillable = ['value', 'withToken', 'redirectTo', 'client_id'];
+    protected $fillable = ['value', 'redirectTo', 'client_id'];
 
 
     public function uids()

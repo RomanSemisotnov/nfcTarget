@@ -2,9 +2,9 @@ import index from './pages/index';
 import login from './pages/login';
 import clientParams from './pages/clientParams';
 import clientPatternLinks from './pages/clientPatternLinks';
-import clientLinks from './pages/clientLinks';
 import clientSetting from './pages/clientSetting';
 import addClient from './pages/addClient';
+import clientAnalytics from './pages/clientAnalytics';
 
 export const routes = [
     {
@@ -53,11 +53,12 @@ export const routes = [
         }
     },
     {
-        path: '/client/:name/links',
-        component: clientLinks,
-        name: 'clientLinks',
+        path: '/client/:name/analytics',
+        component: clientAnalytics,
+        name: 'clientAnalytics',
         meta: {
             requiresAuth: true
         }
     }
+
 ];

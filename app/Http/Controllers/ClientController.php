@@ -31,7 +31,7 @@ class ClientController extends Controller
             'name' => $request->input('name'),
             'subdomain' => $request->input('subdomain')
         ]);
-        for ($i = 1; $i <= 5; $i++) {
+        for ($i = 1; $i <= 3; $i++) {
             $param=QueryParam::create([
                 'client_id' => $client->id,
                 'name' => '',

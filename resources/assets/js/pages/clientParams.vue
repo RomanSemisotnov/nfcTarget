@@ -9,97 +9,51 @@
         </el-row>
 
         <el-row>
-            <el-col :span="23">
-                <el-table
-                        default-expand-all
-                        v-loading="isTableLoading"
-                        :data="client.params"
-                        style="width: 100%">
-                    <el-table-column
-                            width="40"
-                            label="id">
-                        <template slot-scope="scope">
-                            {{scope.row.id}}
-                        </template>
-                    </el-table-column>
-                    <el-table-column
-                            width="140"
-                            label="Тип">
-                        <template slot-scope="scope">
-                            <el-select v-model="scope.row.type" placeholder="Select">
-                                <el-option
-                                        v-for="item in options"
-                                        :key="item.value"
-                                        :label="item.label"
-                                        :value="item.value">
-                                </el-option>
-                            </el-select>
-                        </template>
-                    </el-table-column>
+            <el-col :offset="1" :span="6" v-for="(param,ind) in client.params" :key="ind">
+                <el-card class="box-card">
 
-                    <el-table-column type="expand">
-                        <template slot-scope="scope" v-if="scope.row.type !== 'token'">
-                            <el-button-group :key="index" v-for="(varialbe, index) in scope.row.variables">
-                                <el-button type="primary" plain>{{varialbe.name}}==>{{varialbe.requests_count}}</el-button>
-                                <el-button type="primary" :loading="isDeleting"
-                                           @click="deleteVariable(varialbe.id, scope.$index)"
+                    <div slot="header" class="clearfix">
+                        <span>{{param.index_number}}{{') '+param.name}}</span>
+
+                        <el-button-group style="float: right; padding: 3px 0">
+                            <el-button type="primary" @click="openVariableDialog(param.id)" plain
+                                       icon="el-icon-plus"></el-button>
+                            <el-button type="primary" @click="openParamDialog(param.id)" plain
+                                       icon="el-icon-edit"></el-button>
+                        </el-button-group>
+                    </div>
+
+
+                    <el-row>
+                        <el-col :offset="2" :span="20" :key="index" v-for="(varialbe, index) in param.variables">
+                            <el-button-group>
+                                <el-button type="primary" plain>{{varialbe.name}}</el-button>
+                                <el-button type="primary" :loading="isDeletingVariable"
+                                           @click="deleteVariable(varialbe.id, param.id)"
                                            icon="el-icon-delete"></el-button>
                             </el-button-group>
+                        </el-col>
+                    </el-row>
 
-
-                            <el-row>
-                                <el-col :span="12">
-                                    <el-input width="70%" placeholder="Please input" v-model="newVariable"></el-input>
-                                </el-col>
-                                <el-col :span="8">
-                                    <el-button :loading="isAdding" @click="addNewVariable(scope.row.id, scope.$index)">
-                                        Добавить
-                                    </el-button>
-                                </el-col>
-                            </el-row>
-                        </template>
-                    </el-table-column>
-
-                    <el-table-column
-                            width="120"
-                            label="Номер"
-                            prop="index_number">
-                    </el-table-column>
-                    <el-table-column
-                            width="200"
-                            label="Название параметра"
-                            prop="name">
-                    </el-table-column>
-                    <el-table-column
-                            width="180"
-                            label="">
-                        <template slot-scope="scope">
-                            <el-input placeholder="Please input" v-model="scope.row.name"></el-input>
-                        </template>
-                    </el-table-column>
-                    <el-table-column
-                            width="200"
-                            label="">
-                        <template slot-scope="scope">
-                            <el-button :loading="isUpdate" @click="updateParamName(scope.row)"
-                                       type="primary" size="mini" plain round>Сохранить
-                            </el-button>
-                        </template>
-                    </el-table-column>
-                    <el-table-column
-                            width="200"
-                            label="">
-                        <template slot-scope="scope">
-                            <el-button :loading="isFullDeleting" @click="deleteFullParam(scope.row, scope.$index)"
-                                       type="danger" size="mini" plain round>Удалить
-                            </el-button>
-                        </template>
-                    </el-table-column>
-                </el-table>
-
+                </el-card>
             </el-col>
         </el-row>
 
+        <el-dialog title="Добавить подпараметр" :visible.sync="addVariable.visible">
+            <el-input v-model="addVariable.name" autocomplete="off"></el-input>
+            <span slot="footer" class="dialog-footer">
+                <el-button @click="closeVariableDialog()">Назад</el-button>
+                <el-button type="primary" :loading="addVariable.loading" @click="addNewVariable()">Добавить</el-button>
+            </span>
+        </el-dialog>
+
+        <el-dialog title="Обновить параметр" :visible.sync="updateParam.visible">
+            <el-input v-model="updateParam.name" autocomplete="off"></el-input>
+            <span slot="footer" class="dialog-footer">
+                <el-button @click="closeParamDialog()">Назад</el-button>
+                <el-button type="primary" :loading="updateParam.loading" @click="updateParamName()">Обновить</el-button>
+            </span>
+        </el-dialog>
 
     </div>
 </template>
@@ -109,88 +63,113 @@
     import clientNavBar from './../components/clientNavBar';
 
     export default {
-        components:{
+        components: {
             clientNavBar
         },
         data() {
             return {
                 client: {},
-                isTableLoading : false,
-                isUpdate: false,
-                isDeleting: false,
-                isAdding: false,
-                newVariable: '',
-                isFullDeleting: false,
-                itTrue : true,
-                options: [
-                    {
-                        value: 'token',
-                        label: 'token'
-                    }, {
-                        value: 'param',
-                        label: 'param'
-                    }],
+                isDeletingVariable: false,
+                updateParam: {
+                    visible: false,
+                    name: '',
+                    param_id: null,
+                    loading: false
+                },
+                addVariable: {
+                    visible: false,
+                    name: '',
+                    param_id: null,
+                    loading: false
+                }
             }
         },
         created() {
             this.getClient();
         },
         methods: {
-            deleteFullParam(row, index) {
-                this.isFullDeleting = true;
-                axios.post('/api/params/delete/'+row.id).then(response => {
-                    this.isFullDeleting = false;
-                    this.getClient();
-                }).catch(reason => {
-                    this.$message.error('Не удалось удалить параметр');
-                    this.isFullDeleting = false
-                })
+            closeParamDialog() {
+                this.updateParam.name = '';
+                this.updateParam.visible = false;
             },
-            addNewVariable(id, index) {
-                this.isAdding = true;
-                axios.post('/api/variable/create', {param_id: id, name: this.newVariable}).then(response => {
-                    this.newVariable = '';
-                    this.client.params[index].variables.push(response.data);
-                    this.isAdding = false;
+            openParamDialog(param_id) {
+                this.updateParam.visible = true;
+                this.updateParam.param_id = param_id;
+
+                for (let index in this.client.params) {
+                    if (this.client.params[index].id === this.updateParam.param_id) {
+                        this.updateParam.name = this.client.params[index].name;
+                    }
+                }
+            },
+            closeVariableDialog() {
+                this.addVariable.name = '';
+                this.addVariable.visible = false;
+            },
+            openVariableDialog(param_id) {
+                this.addVariable.name = '';
+                this.addVariable.visible = true;
+                this.addVariable.param_id = param_id;
+            },
+            addNewVariable() {
+                this.addVariable.loading = true;
+                axios.post('/api/variable/create', {
+                    param_id: this.addVariable.param_id,
+                    name: this.addVariable.name
+                }).then(response => {
+                    for (let index in this.client.params) {
+                        if (this.client.params[index].id === this.addVariable.param_id) {
+                            this.client.params[index].variables.push(response.data);
+                        }
+                    }
+                    this.addVariable.name = '';
+                    this.addVariable.loading = false;
+                    this.addVariable.visible = false;
                 }).catch(reason => {
-                    this.isAdding = false;
+                    this.addVariable.loading = false;
                     this.$message.error('Ошибка добавления');
                 });
             },
-            deleteVariable(id, index) {
-                this.isDeleting = true;
+            deleteVariable(id, param_id) {
+                this.isDeletingVariable = true;
                 axios.post('/api/variable/delete/' + id).then(response => {
-                    let mass = this.client.params[index].variables;
-                    for (let index in mass) {
-                        console.log(index);
-                        if (mass[index].id == id) {
-                            mass.splice(index, 1);
+                    for (let index in this.client.params) {
+                        if (this.client.params[index].id === param_id) {
+                            for (let index1 in this.client.params[index].variables) {
+                                if (this.client.params[index].variables[index1].id === id) {
+                                    this.client.params[index].variables.splice(index1, 1);
+                                }
+                            }
                         }
                     }
-                    this.isDeleting = false;
+                    this.isDeletingVariable = false;
                 }).catch(reason => {
                     this.$message.error('Не удалось удалить параметр');
-                    this.isDeleting = false;
+                    this.isDeletingVariable = false;
                 });
             },
             getClient() {
-                this.isTableLoading=true;
                 axios.get('/api/client/' + this.$route.params.name).then(response => {
                     this.client = response.data;
-                    this.isTableLoading=false;
                 }).catch(reason => {
                     this.$message.error('Не удалось получить клиента ' + this.$route.params.name);
-                    this.isTableLoading=false;
                 })
             },
-            updateParamName(row) {
-                this.isUpdate = true;
-                axios.post('/api/params/update/' + row.id, row).then(response => {
+            updateParamName() {
+                this.updateParam.loading = true;
+                axios.post('/api/params/update/' + this.updateParam.param_id, {name: this.updateParam.name}).then(response => {
+                    for (let index in this.client.params) {
+                        if (this.client.params[index].id === this.updateParam.param_id) {
+                            this.client.params[index].name = this.updateParam.name;
+                        }
+                    }
+
                     this.$message.success('Успешно обновленно');
-                    this.isUpdate = false;
+                    this.updateParam.loading = false;
+                    this.updateParam.visible = false;
                 }).catch(reason => {
                     this.$message.error('Не удалось обновить имя параметра');
-                    this.isUpdate = false;
+                    this.updateParam.loading = false;
                 })
             }
         },

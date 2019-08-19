@@ -16,8 +16,7 @@ class QueryParamsController extends Controller
         if(!$newName){
             $newName='';
         }
-        $type = $request->input('type');
-        QueryParam::findOrFail($id)->update(['name' => $newName, 'type' => $type]);
+        QueryParam::findOrFail($id)->update(['name' => $newName]);
         return 'success';
     }
 

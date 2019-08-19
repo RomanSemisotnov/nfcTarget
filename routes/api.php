@@ -44,5 +44,9 @@ Route::group(['middleware' => 'jwt.auth'], function ($router) {
         Route::post('/delete/{id}', 'PatternsController@delete');
     });
 
+    Route::group(['prefix' => 'analytics'], function ($router) {
+        Route::get('/excel', 'AnalyticsController@getExcel');
+    });
+
 });
 

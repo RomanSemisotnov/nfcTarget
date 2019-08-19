@@ -25,8 +25,6 @@ class CreateRequestVariableTable extends Migration
             $table->foreign('paramvariable_id')
                 ->references('id')->on('param_variables')
                 ->onDelete('cascade');
-
-            $table->timestamps();
         });
     }
 

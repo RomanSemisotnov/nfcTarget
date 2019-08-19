@@ -52,23 +52,89 @@
         </el-row>
 
 
+        <el-row>
+            <el-col :offset="1" :span="22">
+                <el-card class="box-card">
+
+                    <el-row>
+                        <el-col :span="24">
+                            <el-table
+                                    :loading="isTableLoading"
+                                    :data="data"
+                                    style="width: 100%">
+                                <el-table-column
+                                        prop="id"
+                                        label="#"
+                                        width="60">
+                                </el-table-column>
+                                <el-table-column
+                                        prop="value"
+                                        label="URL"
+                                        width="300">
+                                </el-table-column>
+                                <el-table-column
+                                        prop="redirectTo"
+                                        label="Редирект"
+                                        width="260">
+                                </el-table-column>
+                                <el-table-column
+                                        prop="created_at"
+                                        label="Дата"
+                                        width="210">
+                                </el-table-column>
+
+                                <el-table-column
+                                        width="120">
+                                    <template slot-scope="scope">
+                                        <delete-client-link v-on:delete="deleteRow" :link_id="scope.row.id"
+                                                            :index="scope.$index"></delete-client-link>
+                                    </template>
+                                </el-table-column>
+
+                            </el-table>
+                        </el-col>
+                    </el-row>
+
+                    <el-row>
+                        <el-col :offset="3" :span="20">
+                            <el-pagination
+                                    background
+                                    layout="prev, pager, next"
+                                    :page-size="20"
+                                    current-change
+                                    @current-change="changePage"
+                                    :total="totalLinks">
+                            </el-pagination>
+                        </el-col>
+                    </el-row>
+
+                </el-card>
+            </el-col>
+        </el-row>
+
+
     </div>
 </template>
 
 <script>
     import axios from 'axios';
     import clientNavBar from './../components/clientNavBar';
+    import DeleteClientLink from "../components/buttons/deleteClientLink";
 
     export default {
         components: {
-            clientNavBar
+            clientNavBar, DeleteClientLink
         },
         data() {
             return {
                 client: {},
-                params: [{value: ''}, {value: ''}, {value: ''}, {value: ''}, {value: ''}],
+                params: [{value: ''}, {value: ''}, {value: ''}],
                 redirectTo: '',
-                isAdding: false
+                isAdding: false,
+                data: [],
+                isTableLoading: true,
+                totalLinks: 0,
+                currentPage: 1
             }
         },
         created() {
@@ -78,10 +144,8 @@
             addLinks() {
                 let myParams = [];
                 for (let index = 0; index < this.client.params.length; index++) {
-                    if (this.params[index].value.trim() && this.client.params[index].type !== 'token') {
+                    if (this.params[index].value.trim()) {
                         myParams.push(this.params[index].value.trim());
-                    } else if (this.client.params[index].type === 'token') {
-                        myParams.push('token');
                     } else {
                         this.$message.error('Параметр ' + (index + 1) + ' не назначен');
                         return;
@@ -94,6 +158,7 @@
                     redirectTo: this.redirectTo,
                     params: myParams
                 }).then(response => {
+                    this.data.unshift(response.data);
                     this.isAdding = false;
                     this.$message.success('Успешно добавленно');
                 }).catch(reason => {
@@ -104,14 +169,33 @@
             getClient() {
                 axios.get('/api/client/' + this.$route.params.name).then(response => {
                     this.client = response.data;
+                    this.getLinks();
                 }).catch(reason => {
                     this.$message.error('Не удалось получить клиента ' + this.$route.params.name);
                 })
             },
+            deleteRow(index) {
+                this.data.splice(index, 1);
+            },
+            getLinks() {
+                this.isTableLoading = true;
+                axios.get('/api/patterns/' + this.client.id + '?page=' + this.currentPage).then(response => {
+                    this.data = response.data.data;
+                    this.totalLinks = response.data.total;
+                    this.isTableLoading = false;
+                }).catch(reason => {
+                    this.isTableLoading = false;
+                    this.$message.error('Не удалось получить ссылки');
+                });
+            },
+            changePage(newPage) {
+                this.currentPage = newPage;
+                this.getLinks();
+            },
         },
         watch: {
             '$route'(to, from) {
-
+                this.getClient();
             },
         }
     }

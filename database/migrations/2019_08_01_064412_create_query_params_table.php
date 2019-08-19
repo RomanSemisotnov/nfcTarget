@@ -16,7 +16,6 @@ class CreateQueryParamsTable extends Migration
         Schema::create('query_params', function (Blueprint $table) {
             $table->increments('id');
             $table->string('name');
-            $table->string('type')->default('param');
             $table->integer('client_id')->unsigned();
             $table->foreign('client_id')
                 ->references('id')->on('clients')
