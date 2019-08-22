@@ -13,7 +13,7 @@ class PatternLink extends Model
 
     public function uids()
     {
-        return $this->hasMany(Uid::class);
+        return $this->hasMany(Uid::class, 'patternlink_id');
     }
 
 }

@@ -41,6 +41,7 @@ Route::group(['middleware' => 'jwt.auth'], function ($router) {
     Route::group(['prefix' => 'patterns'], function ($router) {
         Route::get('/{client_id}', 'PatternsController@get');
         Route::post('/', 'PatternsController@store');
+        Route::post('/update/{link_id}', 'PatternsController@update');
         Route::post('/delete/{id}', 'PatternsController@delete');
     });
 

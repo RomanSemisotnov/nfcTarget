@@ -9,10 +9,10 @@
         </el-row>
 
         <el-row>
-            <el-col :offset="3" :span="21">
+            <el-col :offset="3" :span="8">
                 <div class="block">
-                    <span class="demonstration">Временной интервал</span>
                     <el-date-picker
+                            @change="changeDate"
                             v-model="dateRang"
                             type="daterange"
                             range-separator="--"
@@ -23,11 +23,27 @@
                     </el-date-picker>
                 </div>
             </el-col>
+
+            <el-col :offset="1" :span="6">
+                <el-button disabled @click="unloading">Выгрузить статистику</el-button>
+            </el-col>
         </el-row>
 
         <el-row>
-            <el-col :offset="3" :span="21">
-                <el-button @click="unloading">Выгрузить статистику</el-button>
+            <el-col :offset="1" :span="6" v-for="(param,ind) in client.params" :key="ind">
+                <el-card class="box-card">
+
+                    <div slot="header" class="clearfix">
+                        <span>{{param.index_number}}{{') '+param.name}}</span>
+                    </div>
+
+                    <el-row>
+                        <el-col :offset="2" :span="20" :key="index" v-for="(varialbe, index) in param.variables">
+                            <el-button type="primary" plain>{{varialbe.name}}=> {{varialbe.requests_count}}</el-button>
+                        </el-col>
+                    </el-row>
+
+                </el-card>
             </el-col>
         </el-row>
 
@@ -45,13 +61,16 @@
         data() {
             return {
                 client: {},
-                dateRang: ''
+                dateRang: null
             }
         },
         created() {
             this.getClient();
         },
         methods: {
+            changeDate() {
+                this.getClient();
+            },
             unloading() {
                 axios.get('/api/analytics/excel?client_id=' + this.client.id +
                     '&start=' + this.dateRang[0] +
@@ -64,11 +83,22 @@
                 );
             },
             getClient() {
-                axios.get('/api/client/' + this.$route.params.name).then(response => {
+                let start = '';
+                let end = '';
+                if (this.dateRang !== null) {
+                    start = this.dateRang[0];
+                    end = this.dateRang[1];
+                }
+                axios.get('/api/client/' + this.$route.params.name + '?start=' + start + '&end=' + end).then(response => {
                     this.client = response.data;
                 }).catch(reason => {
                     this.$message.error('Не удалось получить клиента ' + this.$route.params.name);
                 })
+            },
+        },
+        watch: {
+            '$route'(to, from) {
+                this.getClient();
             },
         }
     }

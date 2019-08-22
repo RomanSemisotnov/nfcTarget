@@ -75,6 +75,11 @@
                     this.$message.error('Не удалось обновить клиента');
                 })
             }
+        },
+        watch: {
+            '$route'(to, from) {
+                this.getClient();
+            },
         }
     }
 </script>

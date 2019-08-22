@@ -16,6 +16,11 @@ class CreateCorrectRequestsTable extends Migration
         Schema::create('correct_requests', function (Blueprint $table) {
             $table->increments('id');
 
+            $table->integer('uid_id')->unsigned();
+            $table->foreign('uid_id')
+                ->references('id')->on('uids')
+                ->onDelete('cascade');
+
             $table->integer('client_id')->unsigned();
             $table->foreign('client_id')
                 ->references('id')->on('clients')

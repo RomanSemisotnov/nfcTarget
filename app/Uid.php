@@ -16,5 +16,9 @@ class Uid extends Model
         return $this->belongsTo(PatternLink::class);
     }
 
+    public function correctrequests()
+    {
+        return $this->hasMany(CorrectRequest::class);
+    }
 
 }

@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Client;
 use App\ParamVariable;
 use App\QueryParam;
+use function foo\func;
 use Illuminate\Http\Request;
 
 class ClientController extends Controller
@@ -15,11 +16,18 @@ class ClientController extends Controller
         return Client::all();
     }
 
-    public function get(string $name)
+    public function get(Request $request, string $name)
     {
-        $client = Client::whereName($name)->with(['params' =>function ($query){
-            $query->with(['variables' => function($query1){
-                $query1->withCount('requests');
+        $start = $request->input('start');
+        $end = $request->input('end');
+
+        $client = Client::whereName($name)->with(['params' => function ($query) use ($start, $end) {
+            $query->with(['variables' => function ($query1) use ($start, $end) {
+                $query1->withCount(['requests' => function ($query2) use ($start, $end) {
+                    if($start && $end){
+                        $query2->whereBetween('created_at', [$start.' 00:00:01', $end.' 23:59:59']);
+                    }
+                }]);
             }]);
         }])->first();
         return $client;
@@ -32,7 +40,7 @@ class ClientController extends Controller
             'subdomain' => $request->input('subdomain')
         ]);
         for ($i = 1; $i <= 3; $i++) {
-            $param=QueryParam::create([
+            $param = QueryParam::create([
                 'client_id' => $client->id,
                 'name' => '',
                 'index_number' => $i

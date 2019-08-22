@@ -57,11 +57,24 @@
                 <el-card class="box-card">
 
                     <el-row>
+                        <el-col :offset="1" :span="8">
+                            <el-input placeholder="Нужный подпараметр" @change="paramInput"
+                                      v-model="needParam"></el-input>
+                        </el-col>
+                    </el-row>
+
+                    <el-row>
                         <el-col :span="24">
                             <el-table
                                     :loading="isTableLoading"
                                     :data="data"
                                     style="width: 100%">
+                                <el-table-column type="expand">
+                                    <template slot-scope="scope">
+                                        <p :key="index" v-for="(uid, index) in scope.row.uids">{{index+1}})
+                                            {{uid.value}}</p>
+                                    </template>
+                                </el-table-column>
                                 <el-table-column
                                         prop="id"
                                         label="#"
@@ -77,14 +90,30 @@
                                         label="Редирект"
                                         width="260">
                                 </el-table-column>
+
                                 <el-table-column
-                                        prop="created_at"
-                                        label="Дата"
-                                        width="210">
+                                        prop="summ"
+                                        label="Переходов"
+                                        width="100">
                                 </el-table-column>
 
                                 <el-table-column
-                                        width="120">
+                                        prop="created_at"
+                                        label="Дата"
+                                        width="160">
+                                </el-table-column>
+
+                                <el-table-column
+                                        width="100">
+                                    <template slot-scope="scope">
+                                        <el-button @click="openEditDialog(scope.row.id, scope.$index)" size="small" type="warning"
+                                                   plain round>Изменить
+                                        </el-button>
+                                    </template>
+                                </el-table-column>
+
+                                <el-table-column
+                                        width="100">
                                     <template slot-scope="scope">
                                         <delete-client-link v-on:delete="deleteRow" :link_id="scope.row.id"
                                                             :index="scope.$index"></delete-client-link>
@@ -112,6 +141,13 @@
             </el-col>
         </el-row>
 
+        <el-dialog title="Изменить редирект" :visible.sync="editDialog.visible">
+            <el-input v-model="editDialog.redirectTo" autocomplete="off"></el-input>
+            <span slot="footer" class="dialog-footer">
+                <el-button @click="closeEditDialog()">Отмена</el-button>
+                <el-button type="primary" :loading="editDialog.loading" @click="updateRedirect()">Обновить</el-button>
+            </span>
+        </el-dialog>
 
     </div>
 </template>
@@ -134,13 +170,48 @@
                 data: [],
                 isTableLoading: true,
                 totalLinks: 0,
-                currentPage: 1
+                currentPage: 1,
+                needParam: '',
+                editDialog: {
+                    redirectTo: '',
+                    visible: false,
+                    link_id: null,
+                    rowIndex: null,
+                    loading: false,
+                }
             }
         },
         created() {
             this.getClient();
         },
         methods: {
+            updateRedirect() {
+                this.editDialog.loading = true;
+                axios.post('/api/patterns/update/' + this.editDialog.link_id, {redirectTo: this.editDialog.redirectTo.trim()}).then(response => {
+                    this.editDialog.loading = false;
+                    this.data[this.editDialog.rowIndex].redirectTo=response.data.redirectTo;
+                    this.data[this.editDialog.rowIndex].summ=0;
+                    this.closeEditDialog();
+                }).catch(reason => {
+                    this.editDialog.loading = false;
+                    this.$message.error('Не удалось обновить редирект');
+                });
+            },
+            openEditDialog(link_id, index) {
+                this.editDialog.redirectTo = this.data[index].redirectTo;
+                this.editDialog.link_id = link_id;
+                this.editDialog.rowIndex = index;
+                this.editDialog.visible = true;
+            },
+            closeEditDialog() {
+                this.editDialog.visible = false;
+                this.editDialog.link_id = null;
+                this.editDialog.rowIndex=null;
+                this.editDialog.redirectTo = '';
+            },
+            paramInput() {
+                this.getLinks();
+            },
             addLinks() {
                 let myParams = [];
                 for (let index = 0; index < this.client.params.length; index++) {
@@ -179,9 +250,18 @@
             },
             getLinks() {
                 this.isTableLoading = true;
-                axios.get('/api/patterns/' + this.client.id + '?page=' + this.currentPage).then(response => {
+                axios.get('/api/patterns/' + this.client.id + '?page=' + this.currentPage + '&needParam=' + this.needParam.trim()).then(response => {
                     this.data = response.data.data;
                     this.totalLinks = response.data.total;
+
+                    for(let index in this.data){
+                        let summ=0;
+                        for(let index1 in this.data[index].uids){
+                            summ+=this.data[index].uids[index1].correctrequests_count;
+                        }
+                        this.data[index].summ=summ;
+                    }
+
                     this.isTableLoading = false;
                 }).catch(reason => {
                     this.isTableLoading = false;
