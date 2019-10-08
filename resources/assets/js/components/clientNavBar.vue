@@ -3,6 +3,7 @@
         <el-menu-item :index="getRoute('setting')">Настройки</el-menu-item>
         <el-menu-item :index="getRoute('params')">Параметры и подпараметры</el-menu-item>
         <el-menu-item :index="getRoute('patterns')">Управление</el-menu-item>
+        <el-menu-item :index="getRoute('record')">Запись</el-menu-item>
         <el-menu-item :index="getRoute('analytics')">Аналитика</el-menu-item>
     </el-menu>
 </template>

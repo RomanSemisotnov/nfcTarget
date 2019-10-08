@@ -5,6 +5,7 @@ import clientPatternLinks from './pages/clientPatternLinks';
 import clientSetting from './pages/clientSetting';
 import addClient from './pages/addClient';
 import clientAnalytics from './pages/clientAnalytics';
+import Record from './pages/Record';
 
 export const routes = [
     {
@@ -56,6 +57,14 @@ export const routes = [
         path: '/client/:name/analytics',
         component: clientAnalytics,
         name: 'clientAnalytics',
+        meta: {
+            requiresAuth: true
+        }
+    },
+    {
+        path: '/client/:name/record',
+        component: Record,
+        name: 'Record',
         meta: {
             requiresAuth: true
         }

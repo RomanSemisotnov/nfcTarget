@@ -49,5 +49,12 @@ Route::group(['middleware' => 'jwt.auth'], function ($router) {
         Route::get('/excel', 'AnalyticsController@getExcel');
     });
 
+    Route::group(['prefix' => 'record'], function ($router) {
+        Route::get('/{client_id}', 'RecordController@get');
+        Route::post('/create', 'RecordController@create');
+        Route::post('/delete/{record_id}', 'RecordController@delete');
+        Route::post('/enable/{record_id}', 'RecordController@enable');
+    });
+
 });
 
