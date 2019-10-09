@@ -66,6 +66,7 @@
         },
         created() {
             this.getClient();
+            axios.get('/api/record/get/activeRec');
         },
         methods: {
             changeDate() {

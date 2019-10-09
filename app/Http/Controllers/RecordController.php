@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Record;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 
 class RecordController extends Controller
 {
@@ -15,6 +16,8 @@ class RecordController extends Controller
 
     public function getActiveRecord()
     {
+        return DB::select("SELECT r.needLinks, pat.value FROM `records` r 
+        INNER JOIN `pattern_links` pat ON r.patternlink_id = pat.id WHERE r.isActive ='yes'");
         return Record::where([
             'isActive' => 'yes'
         ])->with('patternlink')->first();
