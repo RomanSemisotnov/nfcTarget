@@ -13,10 +13,9 @@ class RecordController extends Controller
         return Record::whereClient_id($client_id)->with('patternlink')->with('uids')->orderBy('id', 'desc')->get();
     }
 
-    public function getActiveRecord(Request $request, int $client_id)
+    public function getActiveRecord()
     {
         return Record::where([
-            'client_id' => $client_id,
             'isActive' => 'yes'
         ])->with('patternlink')->first();
     }

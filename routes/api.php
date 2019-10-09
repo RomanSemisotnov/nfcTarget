@@ -40,9 +40,6 @@ Route::group(['middleware' => 'jwt.auth'], function ($router) {
 
     Route::group(['prefix' => 'patterns'], function ($router) {
         Route::get('/{client_id}', 'PatternsController@get');
-
-        Route::get('/activeRec/{client_id}', 'PatternsController@getActiveRecord');
-
         Route::post('/', 'PatternsController@store');
         Route::post('/update/{link_id}', 'PatternsController@update');
         Route::post('/delete/{id}', 'PatternsController@delete');
@@ -58,6 +55,7 @@ Route::group(['middleware' => 'jwt.auth'], function ($router) {
 
     Route::group(['prefix' => 'record'], function ($router) {
         Route::get('/{client_id}', 'RecordController@get');
+        Route::get('/activeRec', 'RecordController@getActiveRecord');
         Route::post('/create', 'RecordController@create');
         Route::post('/delete/{record_id}', 'RecordController@delete');
         Route::post('/enable/{record_id}', 'RecordController@enable');
