@@ -26,13 +26,19 @@
                                     :data="records.data"
                                     style="width: 100%">
 
+                                <el-table-column type="expand">
+                                    <template slot-scope="scope">
+                                        <p :key="index" v-for="(uid,index) in scope.row.uids">{{index+1}})
+                                            {{uid.value}}</p>
+                                    </template>
+                                </el-table-column>
                                 <el-table-column
                                         prop="id"
                                         label="#"
                                         width="60">
                                 </el-table-column>
                                 <el-table-column
-                                        prop="pattenrlink.value"
+                                        prop="patternlink.value"
                                         label="URL"
                                         width="270">
                                 </el-table-column>
@@ -44,7 +50,7 @@
                                 </el-table-column>
 
                                 <el-table-column
-                                        prop="pattenrlink.uids_count"
+                                        prop="uids.length"
                                         label="Сделанно"
                                         width="100">
                                 </el-table-column>
@@ -110,12 +116,6 @@
                                     :loading="isTableLoading"
                                     :data="data"
                                     style="width: 100%">
-                                <el-table-column type="expand">
-                                    <template slot-scope="scope">
-                                        <p :key="index" v-for="(uid, index) in scope.row.uids">{{index+1}})
-                                            {{uid.value}}</p>
-                                    </template>
-                                </el-table-column>
                                 <el-table-column
                                         prop="id"
                                         label="#"
@@ -283,6 +283,7 @@
 
                     for (let i = 0; i < this.data.length; i++) {
                         if (this.newRecord.pattern_id === this.data[i].id) {
+                            response.data.uids = [];
                             this.records.data.unshift(response.data);
                         }
                     }

@@ -40,6 +40,9 @@ Route::group(['middleware' => 'jwt.auth'], function ($router) {
 
     Route::group(['prefix' => 'patterns'], function ($router) {
         Route::get('/{client_id}', 'PatternsController@get');
+
+        Route::get('/activeRec/{client_id}', 'PatternsController@getActiveRecord');
+
         Route::post('/', 'PatternsController@store');
         Route::post('/update/{link_id}', 'PatternsController@update');
         Route::post('/delete/{id}', 'PatternsController@delete');
@@ -47,6 +50,10 @@ Route::group(['middleware' => 'jwt.auth'], function ($router) {
 
     Route::group(['prefix' => 'analytics'], function ($router) {
         Route::get('/excel', 'AnalyticsController@getExcel');
+    });
+
+    Route::group(['prefix' => 'uid'], function ($router) {
+        Route::post('/create', 'UidController@create');
     });
 
     Route::group(['prefix' => 'record'], function ($router) {

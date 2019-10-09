@@ -11,9 +11,9 @@ class PatternLink extends Model
     protected $fillable = ['value', 'redirectTo', 'client_id'];
 
 
-    public function uids()
+    public function records()
     {
-        return $this->hasMany(Uid::class, 'patternlink_id');
+        return $this->hasMany(Record::class, 'patternlink_id');
     }
 
 }

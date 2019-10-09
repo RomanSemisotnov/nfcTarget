@@ -69,12 +69,6 @@
                                     :loading="isTableLoading"
                                     :data="data"
                                     style="width: 100%">
-                                <el-table-column type="expand">
-                                    <template slot-scope="scope">
-                                        <p :key="index" v-for="(uid, index) in scope.row.uids">{{index+1}})
-                                            {{uid.value}}</p>
-                                    </template>
-                                </el-table-column>
                                 <el-table-column
                                         prop="id"
                                         label="#"
@@ -106,7 +100,8 @@
                                 <el-table-column
                                         width="100">
                                     <template slot-scope="scope">
-                                        <el-button @click="openEditDialog(scope.row.id, scope.$index)" size="small" type="warning"
+                                        <el-button @click="openEditDialog(scope.row.id, scope.$index)" size="small"
+                                                   type="warning"
                                                    plain round>Изменить
                                         </el-button>
                                     </template>
@@ -189,8 +184,8 @@
                 this.editDialog.loading = true;
                 axios.post('/api/patterns/update/' + this.editDialog.link_id, {redirectTo: this.editDialog.redirectTo.trim()}).then(response => {
                     this.editDialog.loading = false;
-                    this.data[this.editDialog.rowIndex].redirectTo=response.data.redirectTo;
-                    this.data[this.editDialog.rowIndex].summ=0;
+                    this.data[this.editDialog.rowIndex].redirectTo = response.data.redirectTo;
+                    this.data[this.editDialog.rowIndex].summ = 0;
                     this.closeEditDialog();
                 }).catch(reason => {
                     this.editDialog.loading = false;
@@ -206,7 +201,7 @@
             closeEditDialog() {
                 this.editDialog.visible = false;
                 this.editDialog.link_id = null;
-                this.editDialog.rowIndex=null;
+                this.editDialog.rowIndex = null;
                 this.editDialog.redirectTo = '';
             },
             paramInput() {
@@ -229,6 +224,7 @@
                     redirectTo: this.redirectTo,
                     params: myParams
                 }).then(response => {
+                    response.data.summ=0;
                     this.data.unshift(response.data);
                     this.isAdding = false;
                     this.$message.success('Успешно добавленно');
@@ -254,12 +250,16 @@
                     this.data = response.data.data;
                     this.totalLinks = response.data.total;
 
-                    for(let index in this.data){
-                        let summ=0;
-                        for(let index1 in this.data[index].uids){
-                            summ+=this.data[index].uids[index1].correctrequests_count;
+                    for (let index in this.data) {
+                        let summ = 0;
+                        for (let recordIndex in this.data[index].records) {
+                            console.log(this.data[index].records);
+                            for (let uidIndex in this.data[index].records[recordIndex].uids) {
+                                console.log(this.data[index].records[recordIndex].uids[uidIndex].correctrequests_count);
+                                summ += this.data[index].records[recordIndex].uids[uidIndex].correctrequests_count;
+                            }
                         }
-                        this.data[index].summ=summ;
+                        this.data[index].summ = summ;
                     }
 
                     this.isTableLoading = false;

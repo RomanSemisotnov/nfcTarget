@@ -6,6 +6,7 @@ use App\Client;
 use App\CorrectRequest;
 use App\PatternLink;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 
 class PatternsController extends Controller
 {
@@ -17,7 +18,7 @@ class PatternsController extends Controller
         if ($request->input('needParam') !== '')
             $links->where('value', 'like', '%' . $request->input('needParam') . '%');
 
-        return $links->with(['uids' => function($query){
+        return $links->with(['records.uids' => function ($query) {
             $query->withCount('correctrequests');
         }])->orderBy('id', 'desc')->paginate(20);
     }
@@ -47,18 +48,12 @@ class PatternsController extends Controller
 
     public function update(Request $request, int $link_id)
     {
-        $link = PatternLink::whereId($link_id)->with('uids.correctrequests')->first();
+        $link = PatternLink::whereId($link_id)->with('records.uids.correctrequests')->first();
 
-        if($request->input('redirectTo') !== $link->redirectTo){
-            $correctrequests= $link->uids->pluck('correctrequests');
-
-            $correctrequest_ids=[];
-            foreach($correctrequests as $mass){
-                foreach($mass as $correctrequest){
-                    $correctrequest_ids[]=$correctrequest->id;
-                }
-            }
-            CorrectRequest::whereIn('id', $correctrequest_ids)->delete();
+        if ($request->input('redirectTo') !== $link->redirectTo) {
+            DB::delete("DELETE  FROM `correct_requests` WHERE `correct_requests`.uid_id 
+                              IN (SELECT id FROM `uids` WHERE `uids`.record_id
+                              IN (SELECT id FROM `records` WHERE `records`.patternlink_id = $link_id))");
         }
 
         $link->update($request->all());

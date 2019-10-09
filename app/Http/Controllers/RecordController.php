@@ -8,12 +8,17 @@ use Illuminate\Http\Request;
 class RecordController extends Controller
 {
 
-
     public function get(Record $request, int $client_id)
     {
-        return Record::whereClient_id($client_id)->with(['pattenrlink' => function ($query) {
-            $query->withCount('uids');
-        }])->orderBy('id', 'desc')->get();
+        return Record::whereClient_id($client_id)->with('patternlink')->with('uids')->orderBy('id', 'desc')->get();
+    }
+
+    public function getActiveRecord(Request $request, int $client_id)
+    {
+        return Record::where([
+            'client_id' => $client_id,
+            'isActive' => 'yes'
+        ])->with('patternlink')->first();
     }
 
     public function create(Request $request)

@@ -17,9 +17,9 @@ class CreateUidsTable extends Migration
             $table->increments('id');
             $table->string('value')->unique();
 
-            $table->integer('patternlink_id')->unsigned();
-            $table->foreign('patternlink_id')
-                ->references('id')->on('pattern_links')
+            $table->integer('record_id')->unsigned();
+            $table->foreign('record_id')
+                ->references('id')->on('records')
                 ->onDelete('cascade');
 
             $table->timestamps();

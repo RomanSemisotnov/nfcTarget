@@ -13,7 +13,12 @@ class Record extends Model
     ];
 
 
-    public function pattenrlink()
+    public function uids()
+    {
+        return $this->hasMany(Uid::class, 'record_id');
+    }
+
+    public function patternlink()
     {
         return $this->belongsTo(PatternLink::class, 'patternlink_id');
     }
