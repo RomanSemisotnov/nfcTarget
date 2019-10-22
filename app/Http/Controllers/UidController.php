@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Record;
 use App\Uid;
 use Illuminate\Http\Request;
 

@@ -16,11 +16,9 @@ class RecordController extends Controller
 
     public function getActiveRecord()
     {
-        return DB::select("SELECT r.needLinks, pat.value FROM `records` r 
+        return DB::select("SELECT r.id, r.needLinks, pat.value, 
+        (SELECT COUNT(*) from `uids` WHERE `record_id` = r.id) as countLinks FROM `records` r 
         INNER JOIN `pattern_links` pat ON r.patternlink_id = pat.id WHERE r.isActive ='yes'");
-        return Record::where([
-            'isActive' => 'yes'
-        ])->with('patternlink')->first();
     }
 
     public function create(Request $request)
@@ -46,7 +44,6 @@ class RecordController extends Controller
         }
         return 'success';
     }
-
 
     public function delete(Request $request, int $record_id)
     {

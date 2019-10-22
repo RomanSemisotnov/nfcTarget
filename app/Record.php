@@ -24,4 +24,5 @@ class Record extends Model
     }
 
 
+
 }

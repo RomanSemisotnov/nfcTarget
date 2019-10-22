@@ -34,7 +34,7 @@ class PatternsController extends Controller
             }
         }
 
-        $domain = "http://" . $client->subdomain . ".nfc-u.ru/";
+        $domain = "https://" . $client->subdomain . ".nfc-u.ru/";
         foreach ($params as $param) {
             $domain .= $param . '/';
         }
