@@ -29,7 +29,11 @@
                                 <el-table-column type="expand">
                                     <template slot-scope="scope">
                                         <p :key="index" v-for="(uid,index) in scope.row.uids">{{index+1}})
-                                            {{uid.value}}</p>
+                                            {{uid.value}}
+                                            <el-button :loading="isUidDeleting" size="mini" type="danger" plain round
+                                                       @click="deleteUid(uid.id, scope.row.id)">Удалить
+                                            </el-button>
+                                        </p>
                                     </template>
                                 </el-table-column>
                                 <el-table-column
@@ -210,6 +214,7 @@
                     isLoading: true
                 },
 
+                isUidDeleting: false,
                 isNewStatusLoading: false,
                 client: {},
                 data: [],
@@ -222,6 +227,26 @@
             this.getClient();
         },
         methods: {
+            deleteUid(uid_id, record_id) {
+                this.isUidDeleting = true;
+                axios.post("/api/uid/delete/" + uid_id).then(response => {
+                    for (let index in this.records.data) {
+                        if (this.records.data[index].id === record_id) {
+                            for (let index2 in this.records.data[index].uids) {
+                                if (this.records.data[index].uids[index2].id === uid_id) {
+                                    this.records.data[index].uids.splice(index2, 1);
+                                }
+                            }
+                        }
+                    }
+
+                    this.isUidDeleting = false;
+                    this.$message.success("Uid успешно удален");
+                }).catch(reason => {
+                    this.isUidDeleting = false;
+                    this.$message.error("Не удалось удалить Uid.");
+                });
+            },
             deleteRecord(record_id, index) {
                 this.records.isDeleting = true;
                 axios.post('/api/record/delete/' + record_id).then(response => {

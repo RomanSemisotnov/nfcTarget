@@ -51,6 +51,7 @@ Route::group(['middleware' => 'jwt.auth'], function ($router) {
 
     Route::group(['prefix' => 'uid'], function ($router) {
         Route::post('/create', 'UidController@create');
+        Route::post('/delete/{uid_id}', 'UidController@delete');
     });
 
     Route::group(['prefix' => 'record'], function ($router) {
