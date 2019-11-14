@@ -16,4 +16,9 @@ class PatternLink extends Model
         return $this->hasMany(Record::class, 'patternlink_id');
     }
 
+    public function uids()
+    {
+        return $this->hasMany(Uid::class, 'patternlink_id');
+    }
+
 }

@@ -22,6 +22,11 @@ class CreateUidsTable extends Migration
                 ->references('id')->on('records')
                 ->onDelete('cascade');
 
+            $table->integer('patternlink_id')->unsigned();
+            $table->foreign('patternlink_id')
+                ->references('id')->on('pattern_links')
+                ->onDelete('cascade');
+
             $table->timestamps();
         });
     }

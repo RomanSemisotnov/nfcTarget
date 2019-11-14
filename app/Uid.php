@@ -8,7 +8,7 @@ class Uid extends Model
 {
 
     protected $fillable = [
-        'value', 'record_id'
+        'value', 'record_id', 'patternlink_id'
     ];
 
     public function record()
@@ -19,6 +19,11 @@ class Uid extends Model
     public function correctrequests()
     {
         return $this->hasMany(CorrectRequest::class);
+    }
+
+    public function patternlink()
+    {
+        return $this->belongsTo(PatternLink::class, 'patternlink_id');
     }
 
 }

@@ -18,14 +18,15 @@ class UidController extends Controller
         if ($uid === null) {
             $record_id = $request->input('record_id');
 
-            $record=Record::whereId($record_id)->withCount('uids')->first();
+            $record = Record::whereId($record_id)->withCount('uids')->first();
             if ($record->uids_count >= $record->needLinks) {
                 abort(418, "The right amount of id was recorded");
             }
 
             Uid::create([
                 'value' => $request->input('value'),
-                'record_id' => $record_id
+                'record_id' => $record_id,
+                'patternlink_id' => $record->patternlink_id
             ]);
             return DB::select("SELECT  (SELECT COUNT(*) from `uids` WHERE `record_id` = r.id) as countLinks 
             FROM `records` r WHERE r.id =" . $record_id);
