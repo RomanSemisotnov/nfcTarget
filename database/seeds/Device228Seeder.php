@@ -8,7 +8,7 @@ use Illuminate\Database\Seeder;
  * Date: 12/9/2019
  * Time: 8:29 PM
  */
-class DeviceSeeder extends Seeder
+class Device228Seeder extends Seeder
 {
 
     public function run()
