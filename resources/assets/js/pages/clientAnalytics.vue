@@ -185,9 +185,9 @@
             getAllAnalytics(record_id) {
                 axios.get('/api/recordAnalytics/' + record_id + this.getFromTo(this.dateRang)).then(response => {
                     this.analyticDialog.commonData = response.data[0];
+                    this.analyticDialog.visible = true;
                 }).catch(reason => {
                     this.$message.error("Ошибка");
-
                 });
             },
             getAnalytics(record_id) {

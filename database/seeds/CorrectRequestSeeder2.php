@@ -3,7 +3,7 @@
 use App\Uid;
 use Illuminate\Database\Seeder;
 
-class CorrectRequestSeeder extends Seeder
+class CorrectRequestSeeder2 extends Seeder
 {
     /**
      * Run the database seeds.
@@ -16,9 +16,8 @@ class CorrectRequestSeeder extends Seeder
         $uids = Uid::all();
         $devices = \App\Device::all();
         for ($i = 0; $i < $requestCount; $i++) {
-
             \App\CorrectRequest::create([
-                'client_id' => 1,
+                'client_id' => 2,
                 'uid_id' => random_int(1, $uids->count()),
                 'device_id' => random_int(1, $devices->count()),
                 'ip' => str_random(16)

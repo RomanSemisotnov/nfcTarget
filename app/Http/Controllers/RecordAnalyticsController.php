@@ -17,10 +17,9 @@ class RecordAnalyticsController extends Controller
                 $dateParam = '?from=' . $request->input('from') . '&to=' . $request->input('to');
 
             $pathName = config('pathToAppMicroservices.analytics') . $this->route . $record_id . $dateParam;
-
             return file_get_contents($pathName);
         } catch (\Exception  $e) {
-            return $pathName . "<br>" . "Ошибка";
+            return abort(500, $pathName);
         }
     }
 
@@ -34,7 +33,7 @@ class RecordAnalyticsController extends Controller
             $pathName = config('pathToAppMicroservices.analytics') . $this->route . $record_id . '/withUid' . $dateParam;
             return file_get_contents($pathName);
         } catch (\Exception  $e) {
-            return $pathName . "<br>" . "Ошибка";
+            return abort(500, $pathName);
         }
     }
 

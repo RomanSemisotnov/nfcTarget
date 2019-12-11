@@ -4,7 +4,7 @@ use App\Client;
 use App\Uid;
 use Illuminate\Database\Seeder;
 
-class RecordSeeder extends Seeder
+class RecordSeeder2 extends Seeder
 {
     /**
      * Run the database seeds.
@@ -13,7 +13,7 @@ class RecordSeeder extends Seeder
      */
     public function run()
     {
-        $client = Client::create(['name' => 'mozaiqa1', 'subdomain' => 'mozaiqa1']);
+        $client = Client::create(['name' => 'mozaiqa2', 'subdomain' => 'mozaiqa2']);
 
         $firstParam = \App\QueryParam::create([
             'name' => 'city',
@@ -82,6 +82,4 @@ class RecordSeeder extends Seeder
             ]);
         }
     }
-
-
 }
