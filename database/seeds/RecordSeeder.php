@@ -13,6 +13,23 @@ class RecordSeeder extends Seeder
      */
     public function run()
     {
+        $devices = ['Iphone',
+            'Samsung phone',
+            'Sony phone',
+            'Asus phone',
+            'Another phone',
+            'Xiomi phone',
+            'Ipad',
+            'Samsung tablet',
+            'Sony tablet',
+            'Asus tablet',
+            'Xiomi tablet',
+            'Another tablet',
+            'unknown'];
+
+        foreach ($devices as $device) {
+            \App\Device::create(['name' => $device]);
+        }
         $client = Client::create(['name' => 'mozaiqa1', 'subdomain' => 'mozaiqa1']);
 
         $firstParam = \App\QueryParam::create([
