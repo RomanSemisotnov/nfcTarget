@@ -45,8 +45,13 @@ Route::group(['middleware' => 'jwt.auth'], function ($router) {
         Route::post('/delete/{id}', 'PatternsController@delete');
     });
 
-    Route::group(['prefix' => 'analytics'], function ($router) {
-        Route::get('/excel', 'AnalyticsController@getExcel');
+    Route::group(['prefix' => 'recordAnalytics'], function ($router) {
+        Route::get('/{record_id}', 'RecordAnalyticsController@all');
+        Route::get('/{record_id}/withUid', 'RecordAnalyticsController@get');
+    });
+
+    Route::group(['prefix' => 'excelAnalytics'], function ($router) {
+        Route::get('/', 'ExcelAnalyticsController@get');
     });
 
     Route::group(['prefix' => 'uid'], function ($router) {

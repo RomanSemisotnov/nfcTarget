@@ -26,6 +26,7 @@ class RecordController extends Controller
         return Record::create([
             'patternlink_id' => $request->input('pattern_id'),
             'needLinks' => $request->input('needLinks'),
+            'priceOneTag' => $request->input('priceOneTag'),
             'client_id' => $request->input('client_id'),
             'isActive' => 'no'
         ]);

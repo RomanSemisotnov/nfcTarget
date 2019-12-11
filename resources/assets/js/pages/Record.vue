@@ -77,6 +77,12 @@
                                 </el-table-column>
 
                                 <el-table-column
+                                        prop="priceOneTag"
+                                        label="Цена"
+                                        width="80">
+                                </el-table-column>
+
+                                <el-table-column
                                         prop="created_at"
                                         label="Дата"
                                         width="200">
@@ -176,12 +182,15 @@
 
 
         <el-dialog
-                title="Сколько нужно записать ссылок?"
+                title="Характеристики партии"
                 :visible.sync="newRecord.isDialogVisible"
                 width="30%"
                 center>
 
+            Количество:
             <el-input v-model="newRecord.needLinks"></el-input>
+            Стоимость за одну:
+            <el-input v-model="newRecord.priceOneTag"></el-input>
             <span slot="footer" class="dialog-footer">
     <el-button @click="newRecord.isDialogVisible = false" :loading="newRecord.isLoading">Отмена</el-button>
     <el-button type="primary" :loading="newRecord.isLoading" @click="createRecord()">Создать</el-button>
@@ -206,7 +215,8 @@
                     isDialogVisible: false,
                     needLinks: 10,
                     pattern_id: null,
-                    isLoading: false
+                    isLoading: false,
+                    priceOneTag: 50
                 },
                 records: {
                     isDeleting: false,
@@ -302,6 +312,7 @@
                 axios.post('/api/record/create', {
                     pattern_id: this.newRecord.pattern_id,
                     needLinks: this.newRecord.needLinks,
+                    priceOneTag: this.newRecord.priceOneTag,
                     client_id: this.client.id
                 }).then(response => {
                     this.$message.success('Партия успешно созданна');

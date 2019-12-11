@@ -27,6 +27,7 @@ class CreateRecordsTable extends Migration
                 ->onDelete('cascade');
 
             $table->integer('needLinks')->unsigned();
+            $table->integer('priceOneTag')->unsigned();
             $table->string('isActive')->default('no');
 
             $table->timestamps();
