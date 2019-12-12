@@ -59,7 +59,7 @@
                         <template slot-scope="scope">
                             <el-button @click="getAnalytics(scope.row.id)"
                                        type="success"
-                                       :loading="analyticsData.loading"
+                                       :loading="analyticDialog.isLoading"
                                        size="small"
                                        plain round>Аналитика
                             </el-button>
@@ -92,6 +92,7 @@
         <el-dialog
                 title="Список тегов"
                 :visible.sync="analyticDialog.visible"
+                @closed="closeAnalyticDialog"
                 width="90%">
 
             <el-row>
@@ -166,14 +167,11 @@
                     isLoading: true,
                     data: []
                 },
-                analyticsData: {
-                    loading: false,
-                    data: []
-                },
                 analyticDialog: {
                     visible: false,
                     data: [],
-                    commonData: {}
+                    commonData: {},
+                    isLoading : false
                 }
             }
         },
@@ -182,6 +180,10 @@
             this.getRecords();
         },
         methods: {
+            closeAnalyticDialog(){
+                this.analyticDialog.data=[];
+                this.analyticDialog.commonData={};
+            },
             getAllAnalytics(record_id) {
                 axios.get('/api/recordAnalytics/' + record_id + this.getFromTo(this.dateRang)).then(response => {
                     this.analyticDialog.commonData = response.data[0];
@@ -191,15 +193,15 @@
                 });
             },
             getAnalytics(record_id) {
-                this.analyticsData.loading = true;
+                this.analyticDialog.isLoading = true;
                 this.getAllAnalytics(record_id);
                 axios.get('/api/recordAnalytics/' + record_id + '/withUid' + this.getFromTo(this.dateRang)).then(response => {
-                    this.analyticsData.loading = false;
+                    this.analyticDialog.isLoading = false;
                     this.analyticDialog.data = response.data;
                     this.analyticDialog.visible = true;
                 }).catch(reason => {
                     this.$message.error("Ошибка");
-                    this.analyticsData.loading = false;
+                    this.analyticDialog.isLoading = false;
                 });
             },
             getRecords() {
