@@ -10,6 +10,24 @@ use Illuminate\Support\Facades\DB;
 class UidController extends Controller
 {
 
+    public function get(Request $request, string $uid_ids)
+    {
+        $uid = Uid::whereIn('id', explode(',', $uid_ids));
+
+        if ($request->has('with')) {
+            $relationships = explode(',', $request->input('with'));
+            foreach ($relationships as $relationship) {
+                $uid->with($relationship);
+            }
+        }
+
+        $uid = $uid->get();
+
+        if ($uid === null)
+            abort(404, "Uid not found");
+
+        return $uid;
+    }
 
     public function create(Request $request)
     {

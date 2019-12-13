@@ -96,7 +96,7 @@
                 width="90%">
 
             <el-row>
-                <el-col span="20" offset="2">
+                <el-col :span="20" :offset="2">
                     <el-button-group>
                         <el-button plain round>{{'Common: '+analyticDialog.commonData.commonCount}}</el-button>
                         <el-button type="success" plain round>{{'Andr: '+analyticDialog.commonData.androidCount}}
@@ -109,10 +109,25 @@
 
 
             <el-row>
-                <el-col span="20" offset="2">
+                <el-col :span="20" :offset="2">
                     <el-table
                             :data="analyticDialog.data"
-                            style="width: 90%">
+                            style="width: 90%"
+                    >
+
+                        <el-table-column type="expand">
+                            <template slot-scope="props">
+                                <p :key="index" v-for="(request,index) in props.row.correctRequests">
+                                    {{index+1}}){{' '+request.created_at}}
+                                </p>
+                            </template>
+                        </el-table-column>
+
+                        <el-table-column
+                                prop="uid_id"
+                                label="#"
+                                width="50">
+                        </el-table-column>
                         <el-table-column
                                 prop="uid_value"
                                 label="Значение тега"
@@ -123,6 +138,7 @@
                                 label="Всего"
                                 width="120">
                         </el-table-column>
+                        ?
                         <el-table-column
                                 prop="android_count"
                                 label="Android"
@@ -171,7 +187,7 @@
                     visible: false,
                     data: [],
                     commonData: {},
-                    isLoading : false
+                    isLoading: false
                 }
             }
         },
@@ -180,9 +196,24 @@
             this.getRecords();
         },
         methods: {
-            closeAnalyticDialog(){
-                this.analyticDialog.data=[];
-                this.analyticDialog.commonData={};
+            getRequests(uid_ids) {
+                axios.get('/api/uid/' + uid_ids + '?with=correctrequests').then(response => {
+                    for (let index1  in this.analyticDialog.data) {
+                        for (let index2 in response.data) {
+                            if (response.data[index2].id === this.analyticDialog.data[index1].uid_id) {
+                                this.analyticDialog.data[index1].correctRequests = response.data[index2].correctrequests;
+                                break;
+                            }
+                        }
+                    }
+                    console.log(this.analyticDialog.data);
+                }).catch(reason => {
+                    this.$message.error("Ошибка получения дат");
+                });
+            },
+            closeAnalyticDialog() {
+                this.analyticDialog.data = [];
+                this.analyticDialog.commonData = {};
             },
             getAllAnalytics(record_id) {
                 axios.get('/api/recordAnalytics/' + record_id + this.getFromTo(this.dateRang)).then(response => {
@@ -199,6 +230,11 @@
                     this.analyticDialog.isLoading = false;
                     this.analyticDialog.data = response.data;
                     this.analyticDialog.visible = true;
+                    let uid_ids = [];
+                    for (let index in response.data) {
+                        uid_ids.push(response.data[index].uid_id);
+                    }
+                    this.getRequests(uid_ids.join(','));
                 }).catch(reason => {
                     this.$message.error("Ошибка");
                     this.analyticDialog.isLoading = false;
