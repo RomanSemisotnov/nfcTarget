@@ -197,7 +197,7 @@
         },
         methods: {
             getRequests(uid_ids) {
-                axios.get('/api/uid/' + uid_ids + '?with=correctrequests').then(response => {
+                axios.get('/api/uid/' + uid_ids + '?with=correctrequests&' + this.getFromTo(this.dateRang)).then(response => {
                     for (let index1  in this.analyticDialog.data) {
                         for (let index2 in response.data) {
                             if (response.data[index2].id === this.analyticDialog.data[index1].uid_id) {
@@ -206,7 +206,6 @@
                             }
                         }
                     }
-                    console.log(this.analyticDialog.data);
                 }).catch(reason => {
                     this.$message.error("Ошибка получения дат");
                 });
@@ -216,7 +215,7 @@
                 this.analyticDialog.commonData = {};
             },
             getAllAnalytics(record_id) {
-                axios.get('/api/recordAnalytics/' + record_id + this.getFromTo(this.dateRang)).then(response => {
+                axios.get('/api/recordAnalytics/' + record_id + '?' + this.getFromTo(this.dateRang)).then(response => {
                     this.analyticDialog.commonData = response.data[0];
                     this.analyticDialog.visible = true;
                 }).catch(reason => {
@@ -226,7 +225,7 @@
             getAnalytics(record_id) {
                 this.analyticDialog.isLoading = true;
                 this.getAllAnalytics(record_id);
-                axios.get('/api/recordAnalytics/' + record_id + '/withUid' + this.getFromTo(this.dateRang)).then(response => {
+                axios.get('/api/recordAnalytics/' + record_id + '/withUid?' + this.getFromTo(this.dateRang)).then(response => {
                     this.analyticDialog.isLoading = false;
                     this.analyticDialog.data = response.data;
                     this.analyticDialog.visible = true;
@@ -256,10 +255,10 @@
             getFromTo(dateRang) {
                 if (dateRang === null)
                     return "";
-                return '?from=' + dateRang[0] + '&to=' + dateRang[1];
+                return 'from=' + dateRang[0] + '&to=' + dateRang[1];
             },
             unloading() {
-                axios.get('/api/excelAnalytics?client_id=' + this.client.id +
+                axios.get('/api/excelAnalytics?client_id=' + this.client.id + '?' +
                     this.getFromTo(this.dateRang)
                         .then(response => {
 

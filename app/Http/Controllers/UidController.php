@@ -16,8 +16,14 @@ class UidController extends Controller
 
         if ($request->has('with')) {
             $relationships = explode(',', $request->input('with'));
+
             foreach ($relationships as $relationship) {
-                $uid->with($relationship);
+                $uid->with(["$relationship" => function ($query) use ($request) {
+                    if ($request->has('from') && $request->has('to'))
+                        $query->whereBetween('created_at', [$request->input('from'), $request->input('to')]);
+
+                    $query->orderBy('id', 'desc');
+                }]);
             }
         }
 
