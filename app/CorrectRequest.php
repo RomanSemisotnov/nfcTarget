@@ -20,4 +20,9 @@ class CorrectRequest extends Model
         return $this->variables()->attach($variable_ids);
     }
 
+    public function device()
+    {
+        return $this->belongsTo(Device::class);
+    }
+
 }

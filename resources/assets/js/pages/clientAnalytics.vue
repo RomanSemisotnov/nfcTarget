@@ -96,17 +96,29 @@
                 width="90%">
 
             <el-row>
-                <el-col :span="20" :offset="2">
+
+                <el-col :span="10" :offset="2">
+                    <span>Всего переходов по меткам:</span>
                     <el-button-group>
-                        <el-button plain round>{{'Common: '+analyticDialog.commonData.commonCount}}</el-button>
-                        <el-button type="success" plain round>{{'Andr: '+analyticDialog.commonData.androidCount}}
+                        <el-button size="small" plain round>{{'Всего: '+analyticDialog.commonData.commonCount}}</el-button>
+                        <el-button size="small" type="success" plain round>{{'Android: '+analyticDialog.commonData.androidCount}}
                         </el-button>
-                        <el-button type="primary" plain round>{{'Ios: '+analyticDialog.commonData.iosCount}}</el-button>
-                        <el-button plain round>{{'unkn: '+analyticDialog.commonData.unknownCount}}</el-button>
+                        <el-button size="small" type="primary" plain round>{{'Ios: '+analyticDialog.commonData.iosCount}}</el-button>
+                        <el-button size="small" plain round>{{'Неизвестно: '+analyticDialog.commonData.unknownCount}}</el-button>
                     </el-button-group>
                 </el-col>
-            </el-row>
 
+                <el-col :span="11" :offset="1">
+                    <span>Количество меток, по которым перешли:</span>
+                    <el-button-group>
+                        <el-button size="small" plain round>{{'Ios и Android: '+analyticDialog.devices.androidAndIosUidCount}}</el-button>
+                        <el-button size="small" type="success" plain round>{{'Только Android: '+analyticDialog.devices.onlyAndroidUidCount}}
+                        </el-button>
+                        <el-button size="small" type="primary" plain round>{{'Только Ios: '+analyticDialog.devices.onlyIosUidCount}}</el-button>
+                    </el-button-group>
+                </el-col>
+
+            </el-row>
 
             <el-row>
                 <el-col :span="20" :offset="2">
@@ -118,7 +130,7 @@
                         <el-table-column type="expand">
                             <template slot-scope="props">
                                 <p :key="index" v-for="(request,index) in props.row.correctRequests">
-                                    {{index+1}}){{' '+request.created_at}}
+                                    {{index+1+' '}}){{' '+getReverseDateTime(request.created_at)}}
                                 </p>
                             </template>
                         </el-table-column>
@@ -187,7 +199,8 @@
                     visible: false,
                     data: [],
                     commonData: {},
-                    isLoading: false
+                    isLoading: false,
+                    devices: {}
                 }
             }
         },
@@ -222,9 +235,17 @@
                     this.$message.error("Ошибка");
                 });
             },
+            getDevicesAnalytics(record_id) {
+                axios.get('/api/analytics/devices/' + record_id).then(response => {
+                    this.analyticDialog.devices = response.data;
+                }).catch(reason => {
+                    this.$message.error('Ошибка получения аналитики по девайсам');
+                });
+            },
             getAnalytics(record_id) {
                 this.analyticDialog.isLoading = true;
                 this.getAllAnalytics(record_id);
+                this.getDevicesAnalytics(record_id);
                 axios.get('/api/recordAnalytics/' + record_id + '/withUid?' + this.getFromTo(this.dateRang)).then(response => {
                     this.analyticDialog.isLoading = false;
                     this.analyticDialog.data = response.data;
@@ -251,6 +272,15 @@
             },
             changeDate() {
                 this.getClient();
+            },
+            getReverseDateTime(dateTime) {
+                let date = dateTime.split(' ')[0];
+                let time = dateTime.split(' ')[1];
+
+                let newDate = date.split('-').reverse().join('-');
+                let newTime = time.split('-').reverse().join('-');
+
+                return newTime + ' ' + newDate;
             },
             getFromTo(dateRang) {
                 if (dateRang === null)

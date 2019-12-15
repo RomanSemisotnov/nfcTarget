@@ -45,6 +45,16 @@ Route::group(['middleware' => 'jwt.auth'], function ($router) {
         Route::post('/delete/{id}', 'PatternsController@delete');
     });
 
+    //------------------------------
+    Route::group(['prefix' => 'analytics', 'namespace' => 'Analytics'], function ($router) {
+
+        Route::group(['prefix' => 'devices'], function ($router) {
+            Route::get('/{record_id}', 'DevicesAnalyticsController@get');
+        });
+
+    });
+    //-----------------------------
+
     Route::group(['prefix' => 'recordAnalytics'], function ($router) {
         Route::get('/{record_id}', 'RecordAnalyticsController@all');
         Route::get('/{record_id}/withUid', 'RecordAnalyticsController@get');
