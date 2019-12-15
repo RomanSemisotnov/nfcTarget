@@ -6,7 +6,7 @@ use Illuminate\Database\Eloquent\Model;
 
 class Client extends Model
 {
-    protected $fillable = ['name', 'subdomain'];
+    protected $fillable = ['name', 'subdomain', 'promotionViewPath'];
 
     public function params()
     {

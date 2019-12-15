@@ -24,8 +24,8 @@ class ClientController extends Controller
         $client = Client::whereName($name)->with(['params' => function ($query) use ($start, $end) {
             $query->with(['variables' => function ($query1) use ($start, $end) {
                 $query1->withCount(['requests' => function ($query2) use ($start, $end) {
-                    if($start && $end){
-                        $query2->whereBetween('created_at', [$start.' 00:00:01', $end.' 23:59:59']);
+                    if ($start && $end) {
+                        $query2->whereBetween('created_at', [$start . ' 00:00:01', $end . ' 23:59:59']);
                     }
                 }]);
             }]);
@@ -55,8 +55,9 @@ class ClientController extends Controller
 
     public function update(Request $request, int $client_id)
     {
-        Client::findOrFail($client_id)->update($request->all());
-        return 'success';
+        $client = Client::findOrFail($client_id);
+        $client->update($request->all());
+        return $client;
     }
 
 }
