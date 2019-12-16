@@ -9,7 +9,8 @@ class Record extends Model
 
 
     protected $fillable = [
-        'patternlink_id', 'needLinks', 'isActive', 'client_id', 'priceOneTag'
+        'patternlink_id', 'needLinks', 'isActive', 'client_id', 'priceOneTag',
+        'promotionViewPathName', 'promotionDuration'
     ];
 
 

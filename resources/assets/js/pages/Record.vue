@@ -83,6 +83,17 @@
                                 </el-table-column>
 
                                 <el-table-column
+                                        prop="promotionViewPathName"
+                                        label="Реклама"
+                                        width="80">
+                                </el-table-column>
+                                <el-table-column
+                                        prop="promotionDuration"
+                                        label="Длительность"
+                                        width="80">
+                                </el-table-column>
+
+                                <el-table-column
                                         prop="created_at"
                                         label="Дата"
                                         width="200">
@@ -191,6 +202,12 @@
             <el-input v-model="newRecord.needLinks"></el-input>
             Стоимость за одну:
             <el-input v-model="newRecord.priceOneTag"></el-input>
+
+            Рекламная картинка(если нету оставить пустым)
+            <el-input v-model="newRecord.promotionViewPathName"></el-input>
+            Длительность рекламы(если нету оставить пустым)
+            <el-input v-model="newRecord.promotionDuration"></el-input>
+
             <span slot="footer" class="dialog-footer">
     <el-button @click="newRecord.isDialogVisible = false" :loading="newRecord.isLoading">Отмена</el-button>
     <el-button type="primary" :loading="newRecord.isLoading" @click="createRecord()">Создать</el-button>
@@ -214,9 +231,11 @@
                 newRecord: {
                     isDialogVisible: false,
                     needLinks: 10,
-                    pattern_id: null,
+                    patternlink_id: null,
                     isLoading: false,
-                    priceOneTag: 50
+                    priceOneTag: 50,
+                    promotionViewPathName: null,
+                    promotionDuration: null
                 },
                 records: {
                     isDeleting: false,
@@ -304,21 +323,23 @@
                 });
             },
             openCreateRecordDialog(id, index) {
-                this.newRecord.pattern_id = id;
+                this.newRecord.patternlink_id = id;
                 this.newRecord.isDialogVisible = true;
             },
             createRecord() {
                 this.newRecord.isLoading = true;
                 axios.post('/api/record/create', {
-                    pattern_id: this.newRecord.pattern_id,
+                    patternlink_id: this.newRecord.patternlink_id,
                     needLinks: this.newRecord.needLinks,
                     priceOneTag: this.newRecord.priceOneTag,
-                    client_id: this.client.id
+                    client_id: this.client.id,
+                    promotionViewPathName: this.newRecord.promotionViewPathName,
+                    promotionDuration: this.newRecord.promotionDuration
                 }).then(response => {
                     this.$message.success('Партия успешно созданна');
 
                     for (let i = 0; i < this.data.length; i++) {
-                        if (this.newRecord.pattern_id === this.data[i].id) {
+                        if (this.newRecord.patternlink_id === this.data[i].id) {
                             response.data.uids = [];
                             this.records.data.unshift(response.data);
                         }

@@ -22,14 +22,6 @@
             </el-row>
 
             <el-row :gutter="24">
-                <el-col :offset="3" :span="14">
-                    <el-form-item label="Страница с рекламой">
-                        <el-input v-model="client.promotionViewPath"></el-input>
-                    </el-form-item>
-                </el-col>
-            </el-row>
-
-            <el-row :gutter="24">
                 <el-col :offset="9" :span="8">
                     <el-button :loading="isUpdate" @click="update()" type="primary" round>Обновить</el-button>
                 </el-col>

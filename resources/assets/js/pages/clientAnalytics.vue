@@ -129,7 +129,8 @@
 
                         <el-table-column type="expand">
                             <template slot-scope="props">
-                                <p :key="index" v-for="(request,index) in props.row.correctRequests">
+                                <p :key="index" v-for="(request,index) in props.row.correctRequests"
+                                :style=getRequestDateStyle(request)>
                                     {{index+1+' '}}){{' '+getReverseDateTime(request.created_at)}}
                                 </p>
                             </template>
@@ -302,6 +303,16 @@
                 }).catch(reason => {
                     this.$message.error('Не удалось получить клиента ' + this.$route.params.name);
                 })
+            },
+            getRequestDateStyle(request){
+                let style='width:30%; border-radius:3px; border:1.5px solid ';
+                if(request.isConversion === 'no'){
+                    style+='red';
+                    return style;
+                }else if(request.isConversion === 'yes'){
+                    style+='green';
+                    return style;
+                }
             },
         },
         watch: {

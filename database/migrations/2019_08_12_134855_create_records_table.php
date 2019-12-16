@@ -16,6 +16,9 @@ class CreateRecordsTable extends Migration
         Schema::create('records', function (Blueprint $table) {
             $table->increments('id');
 
+            $table->string('promotionViewPathName')->nullable();
+            $table->integer('promotionDuration')->nullable();
+
             $table->integer('patternlink_id')->unsigned();
             $table->foreign('patternlink_id')
                 ->references('id')->on('pattern_links')
