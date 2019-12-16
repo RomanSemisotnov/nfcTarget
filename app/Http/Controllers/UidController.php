@@ -59,6 +59,13 @@ class UidController extends Controller
         }
     }
 
+    public function update(Request $request, int $uid_id)
+    {
+        $uid = Uid::findOrFail($uid_id);
+        $uid->update($request->all());
+        return $uid;
+    }
+
     public function delete(Request $request, int $uid_id)
     {
         Uid::findOrFail($uid_id)->delete();

@@ -15,6 +15,7 @@ class CreateCorrectRequestsTable extends Migration
     {
         Schema::create('correct_requests', function (Blueprint $table) {
             $table->increments('id');
+            $table->string('isConversion')->default('no');
 
             $table->integer('uid_id')->unsigned();
             $table->foreign('uid_id')
