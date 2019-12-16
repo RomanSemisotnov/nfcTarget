@@ -20,7 +20,7 @@ Route::group(['prefix' => 'auth'], function ($router) {
     Route::post('me', 'AuthController@me');
 });
 
-Route::post('/uid/update/{uid_id}', 'UidController@update');
+Route::post('/correctrequest/update/{request_id}', 'CorrectRequestController@update');
 
 Route::group(['middleware' => 'jwt.auth'], function ($router) {
 
@@ -70,6 +70,7 @@ Route::group(['middleware' => 'jwt.auth'], function ($router) {
     Route::group(['prefix' => 'uid'], function ($router) {
         Route::get('/{uid_id}', 'UidController@get');
         Route::post('/create', 'UidController@create');
+        Route::post('/update/{uid_id}', 'UidController@update');
         Route::post('/delete/{uid_id}', 'UidController@delete');
     });
 
