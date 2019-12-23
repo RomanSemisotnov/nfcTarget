@@ -96,7 +96,6 @@
                 width="90%">
 
             <el-row>
-
                 <el-col :span="10" :offset="2">
                     <span>Всего переходов по меткам:</span>
                     <el-button-group>
@@ -119,6 +118,18 @@
                         <el-button size="small" type="success" plain round>{{'Только Android:'+analyticDialog.devices.onlyAndroidCount}}
                         </el-button>
                         <el-button size="small" type="primary" plain round>{{'Только Ios:'+analyticDialog.devices.onlyIosCount}}
+                        </el-button>
+                    </el-button-group>
+                </el-col>
+            </el-row>
+
+            <el-row style="margin-top:20px">
+
+                <el-col :span="10" :offset="2">
+                    <el-button-group>
+                        <el-button size="small" type="success" plain round>{{'Открыто: '+analyticDialog.uidOpenCount}}
+                        </el-button>
+                        <el-button size="small" type="danger" plain round>{{'Не открыто: '+analyticDialog.uidNotOpenCount}}
                         </el-button>
                     </el-button-group>
                 </el-col>
@@ -206,7 +217,9 @@
                     data: [],
                     commonData: {},
                     isLoading: false,
-                    devices: {}
+                    devices: {},
+                    uidOpenCount : 0,
+                    uidNotOpenCount: 0
                 }
             }
         },
@@ -244,16 +257,29 @@
                 });
             },
             getDevicesAnalytics(record_id) {
-                axios.get('/api/analytics/devices/' + record_id + '/rating').then(response => {
+                axios.get('/api/analytics/devices/' + record_id + '/rating?'+this.getFromTo(this.dateRang)).then(response => {
                     this.analyticDialog.devices = response.data[0];
                 }).catch(reason => {
                     this.$message.error('Ошибка получения аналитики по девайсам');
+                });
+            },
+            getOpenCount(record_id){
+                axios.get('/api/analytics/uids/'+record_id+'/openCount?'+ this.getFromTo(this.dateRang)).then(response => {
+                    this.analyticDialog.uidOpenCount=response.data[0].count;
+                }).catch(reason => {
+                    this.$message.error("Ошибка");
+                });
+                axios.get('/api/analytics/uids/'+record_id+'/notOpenCount?'+ this.getFromTo(this.dateRang)).then(response => {
+                    this.analyticDialog.uidNotOpenCount=response.data[0].count;
+                }).catch(reason => {
+                    this.$message.error("Ошибка");
                 });
             },
             getAnalytics(record_id) {
                 this.analyticDialog.isLoading = true;
                 this.getAllAnalytics(record_id);
                 this.getDevicesAnalytics(record_id);
+                this.getOpenCount(record_id);
                 axios.get('/api/analytics/devices/' + record_id + '?' + this.getFromTo(this.dateRang)).then(response => {
                     this.analyticDialog.isLoading = false;
                     this.analyticDialog.data = response.data;

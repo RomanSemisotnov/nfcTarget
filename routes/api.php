@@ -56,6 +56,11 @@ Route::group(['middleware' => 'jwt.auth'], function ($router) {
             Route::get('/{record_id}/all', 'DevicesAnalyticsController@all');
         });
 
+        Route::group(['prefix' => 'uids'], function ($router) {
+            Route::get('/{record_id}/openCount', 'UidsAnalyticsController@getOpenCount');
+            Route::get('/{record_id}/notOpenCount', 'UidsAnalyticsController@getNotOpenCount');
+        });
+
     });
 
     Route::group(['prefix' => 'excelAnalytics'], function ($router) {

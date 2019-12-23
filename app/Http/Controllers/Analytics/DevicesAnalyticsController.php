@@ -15,7 +15,7 @@ class DevicesAnalyticsController extends Controller
         try {
             $dateParam = '';
             if ($request->input('from') !== null)
-                $dateParam = '?from=' . $request->input('from') . '&to=' . $request->input('to');
+                $dateParam = '?startDate=' . $request->input('from') . '&endDate=' . $request->input('to');
 
             $pathName = config('pathToAppMicroservices.analytics') . $this->route . $record_id . '/all' . $dateParam;
             return file_get_contents($pathName);
@@ -29,7 +29,7 @@ class DevicesAnalyticsController extends Controller
         try {
             $dateParam = '';
             if ($request->input('from') !== null)
-                $dateParam = '?from=' . $request->input('from') . '&to=' . $request->input('to');
+                $dateParam = '?startDate=' . $request->input('from') . '&endDate=' . $request->input('to');
 
             $pathName = config('pathToAppMicroservices.analytics') . $this->route . $record_id . $dateParam;
             return file_get_contents($pathName);
@@ -43,7 +43,7 @@ class DevicesAnalyticsController extends Controller
         try {
             $dateParam = '';
             if ($request->input('from') !== null)
-                $dateParam = '?from=' . $request->input('from') . '&to=' . $request->input('to');
+                $dateParam = '?startDate=' . $request->input('from') . '&endDate=' . $request->input('to');
 
             $pathName = config('pathToAppMicroservices.analytics') . $this->route . $record_id . '/rating' . $dateParam;
             return file_get_contents($pathName);
