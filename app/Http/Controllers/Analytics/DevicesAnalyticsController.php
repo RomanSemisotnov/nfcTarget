@@ -2,51 +2,54 @@
 
 namespace App\Http\Controllers\Analytics;
 
-use App\Uid;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 
 class DevicesAnalyticsController extends Controller
 {
 
+    private $route = '/analytics/devices/';
+
+    public function all(Request $request, int $record_id)
+    {
+        try {
+            $dateParam = '';
+            if ($request->input('from') !== null)
+                $dateParam = '?from=' . $request->input('from') . '&to=' . $request->input('to');
+
+            $pathName = config('pathToAppMicroservices.analytics') . $this->route . $record_id . '/all' . $dateParam;
+            return file_get_contents($pathName);
+        } catch (\Exception  $e) {
+            return abort(500, $pathName);
+        }
+    }
+
     public function get(Request $request, int $record_id)
     {
+        try {
+            $dateParam = '';
+            if ($request->input('from') !== null)
+                $dateParam = '?from=' . $request->input('from') . '&to=' . $request->input('to');
 
-        $onlyAndroidUidCount = Uid::whereRecord_id($record_id)
-            ->whereHas('correctrequests', function ($query) {
-                $query->whereHas('device', function ($query2) {
-                    $query2->whereIn('name', config('devices.android'));
-                });
-            })
-            ->whereDoesntHave('correctrequests', function ($query) {
-                $query->whereHas('device', function ($query2) {
-                    $query2->whereIn('name', config('devices.ios'));
-                });
-            })->count();
-
-        $onlyIosUidCount = Uid::whereRecord_id($record_id)
-            ->whereHas('correctrequests', function ($query) {
-                $query->whereHas('device', function ($query2) {
-                    $query2->whereIn('name', config('devices.ios'));
-                });
-            })
-            ->whereDoesntHave('correctrequests', function ($query) {
-                $query->whereHas('device', function ($query2) {
-                    $query2->whereIn('name', config('devices.android'));
-                });
-            })->count();
-
-        $iosAndAndroidUidCount = Uid::whereRecord_id($record_id)->whereHas('correctrequests', function ($query) {
-            $query->whereHas('device', function ($query2) {
-                $devices = array_merge(config('devices.ios'), config('devices.android'));
-                $query2->whereIn('name', $devices);
-            });
-        })->count();
-
-        return [
-            'onlyAndroidUidCount' => $onlyAndroidUidCount,
-            'onlyIosUidCount' => $onlyIosUidCount,
-            'androidAndIosUidCount' => $iosAndAndroidUidCount,
-        ];
+            $pathName = config('pathToAppMicroservices.analytics') . $this->route . $record_id . $dateParam;
+            return file_get_contents($pathName);
+        } catch (\Exception  $e) {
+            return abort(500, $pathName);
+        }
     }
+
+    public function getRating(Request $request, int $record_id)
+    {
+        try {
+            $dateParam = '';
+            if ($request->input('from') !== null)
+                $dateParam = '?from=' . $request->input('from') . '&to=' . $request->input('to');
+
+            $pathName = config('pathToAppMicroservices.analytics') . $this->route . $record_id . '/rating' . $dateParam;
+            return file_get_contents($pathName);
+        } catch (\Exception  $e) {
+            return abort(500, $pathName);
+        }
+    }
+
 }

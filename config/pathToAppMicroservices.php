@@ -6,5 +6,5 @@ return [
      */
 
     //'analytics' => 'http://localhost:8080'
-    'analytics' => 'http://analyticservice.jelastic.regruhosting.ru/'
+    'analytics' => 'http://analyticservice.jelastic.regruhosting.ru'
 ];

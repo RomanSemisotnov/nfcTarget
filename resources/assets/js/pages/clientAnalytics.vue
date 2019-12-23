@@ -100,21 +100,26 @@
                 <el-col :span="10" :offset="2">
                     <span>Всего переходов по меткам:</span>
                     <el-button-group>
-                        <el-button size="small" plain round>{{'Всего: '+analyticDialog.commonData.commonCount}}</el-button>
-                        <el-button size="small" type="success" plain round>{{'Android: '+analyticDialog.commonData.androidCount}}
+                        <el-button size="small" plain round>{{'Всего: '+analyticDialog.commonData.commonCount}}
                         </el-button>
-                        <el-button size="small" type="primary" plain round>{{'Ios: '+analyticDialog.commonData.iosCount}}</el-button>
-                        <el-button size="small" plain round>{{'Неизвестно: '+analyticDialog.commonData.unknownCount}}</el-button>
+                        <el-button size="small" type="success" plain round>{{'Android:'+analyticDialog.commonData.androidCount}}
+                        </el-button>
+                        <el-button size="small" type="primary" plain round>{{'Ios:'+analyticDialog.commonData.iosCount}}
+                        </el-button>
+                        <el-button size="small" plain round>{{'Неизвестно: '+analyticDialog.commonData.unknownCount}}
+                        </el-button>
                     </el-button-group>
                 </el-col>
 
                 <el-col :span="11" :offset="1">
                     <span>Количество меток, по которым перешли:</span>
                     <el-button-group>
-                        <el-button size="small" plain round>{{'Ios и Android: '+analyticDialog.devices.androidAndIosUidCount}}</el-button>
-                        <el-button size="small" type="success" plain round>{{'Только Android: '+analyticDialog.devices.onlyAndroidUidCount}}
+                        <el-button size="small" plain round>{{'Ios и Android:'+analyticDialog.devices.androidAndIosCount}}
                         </el-button>
-                        <el-button size="small" type="primary" plain round>{{'Только Ios: '+analyticDialog.devices.onlyIosUidCount}}</el-button>
+                        <el-button size="small" type="success" plain round>{{'Только Android:'+analyticDialog.devices.onlyAndroidCount}}
+                        </el-button>
+                        <el-button size="small" type="primary" plain round>{{'Только Ios:'+analyticDialog.devices.onlyIosCount}}
+                        </el-button>
                     </el-button-group>
                 </el-col>
 
@@ -130,7 +135,7 @@
                         <el-table-column type="expand">
                             <template slot-scope="props">
                                 <p :key="index" v-for="(request,index) in props.row.correctRequests"
-                                :style=getRequestDateStyle(request)>
+                                   :style=getRequestDateStyle(request)>
                                     {{index+1+' '}}){{' '+getReverseDateTime(request.created_at)}}
                                 </p>
                             </template>
@@ -211,25 +216,27 @@
         },
         methods: {
             getRequests(uid_ids) {
-                axios.get('/api/uid/' + uid_ids + '?with=correctrequests&' + this.getFromTo(this.dateRang)).then(response => {
-                    for (let index1  in this.analyticDialog.data) {
-                        for (let index2 in response.data) {
-                            if (response.data[index2].id === this.analyticDialog.data[index1].uid_id) {
-                                this.analyticDialog.data[index1].correctRequests = response.data[index2].correctrequests;
-                                break;
+                if (uid_ids.trim() !== "") {
+                    axios.get('/api/uid/' + uid_ids + '?with=correctrequests&' + this.getFromTo(this.dateRang)).then(response => {
+                        for (let index1  in this.analyticDialog.data) {
+                            for (let index2 in response.data) {
+                                if (response.data[index2].id === this.analyticDialog.data[index1].uid_id) {
+                                    this.analyticDialog.data[index1].correctRequests = response.data[index2].correctrequests;
+                                    break;
+                                }
                             }
                         }
-                    }
-                }).catch(reason => {
-                    this.$message.error("Ошибка получения дат");
-                });
+                    }).catch(reason => {
+                        this.$message.error("Ошибка получения дат");
+                    });
+                }
             },
             closeAnalyticDialog() {
                 this.analyticDialog.data = [];
                 this.analyticDialog.commonData = {};
             },
             getAllAnalytics(record_id) {
-                axios.get('/api/recordAnalytics/' + record_id + '?' + this.getFromTo(this.dateRang)).then(response => {
+                axios.get('/api/analytics/devices/' + record_id + '/all?' + this.getFromTo(this.dateRang)).then(response => {
                     this.analyticDialog.commonData = response.data[0];
                     this.analyticDialog.visible = true;
                 }).catch(reason => {
@@ -237,8 +244,8 @@
                 });
             },
             getDevicesAnalytics(record_id) {
-                axios.get('/api/analytics/devices/' + record_id).then(response => {
-                    this.analyticDialog.devices = response.data;
+                axios.get('/api/analytics/devices/' + record_id + '/rating').then(response => {
+                    this.analyticDialog.devices = response.data[0];
                 }).catch(reason => {
                     this.$message.error('Ошибка получения аналитики по девайсам');
                 });
@@ -247,7 +254,7 @@
                 this.analyticDialog.isLoading = true;
                 this.getAllAnalytics(record_id);
                 this.getDevicesAnalytics(record_id);
-                axios.get('/api/recordAnalytics/' + record_id + '/withUid?' + this.getFromTo(this.dateRang)).then(response => {
+                axios.get('/api/analytics/devices/' + record_id + '?' + this.getFromTo(this.dateRang)).then(response => {
                     this.analyticDialog.isLoading = false;
                     this.analyticDialog.data = response.data;
                     this.analyticDialog.visible = true;
@@ -304,13 +311,13 @@
                     this.$message.error('Не удалось получить клиента ' + this.$route.params.name);
                 })
             },
-            getRequestDateStyle(request){
-                let style='width:30%; border-radius:3px; border:1.5px solid ';
-                if(request.isConversion === 'no'){
-                    style+='red';
+            getRequestDateStyle(request) {
+                let style = 'width:30%; border-radius:3px; border:1.5px solid ';
+                if (request.isConversion === 'no') {
+                    style += 'red';
                     return style;
-                }else if(request.isConversion === 'yes'){
-                    style+='green';
+                } else if (request.isConversion === 'yes') {
+                    style += 'green';
                     return style;
                 }
             },
