@@ -126,6 +126,7 @@
             <el-row style="margin-top:20px">
 
                 <el-col :span="10" :offset="2">
+                    <span>Меток всего:</span>
                     <el-button-group>
                         <el-button size="small" type="success" plain round>{{'Открыто: '+analyticDialog.uidOpenCount}}
                         </el-button>
