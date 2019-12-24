@@ -146,7 +146,7 @@
                 <el-col :span="5" :offset="1">
                     <span>Средняя цена клика</span><br>
 
-                    <el-tag>{{ typeof analyticDialog.averagePricePerClick === 'number' ? analyticDialog.averagePricePerClick.toFixed(2) : analyticDialog.averagePricePerClick}}</el-tag>
+                    <el-tag>{{analyticDialog.averagePricePerClick}}</el-tag>
                 </el-col>
 
             </el-row>
