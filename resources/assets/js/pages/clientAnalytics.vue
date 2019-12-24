@@ -135,12 +135,18 @@
                     </el-button-group>
                 </el-col>
 
-                <el-col :span="8" :offset="1">
+                <el-col :span="3" :offset="1">
                     <span>Сlick-through rate</span><br>
 
                     <el-tag>{{analyticDialog.conversionData.withConversion}}/{{analyticDialog.conversionData.withConversion+analyticDialog.conversionData.withoutConversion}}
-                    ({{' '+getConversionPersent(analyticDialog.conversionData.withConversion,analyticDialog.conversionData.withoutConversion)+'% '}})
+                    ({{' '+getConversionPersent(analyticDialog.conversionData.withConversion,analyticDialog.conversionData.withoutConversion).toFixed(1)+'% '}})
                     </el-tag>
+                </el-col>
+
+                <el-col :span="5" :offset="1">
+                    <span>Средняя цена клика</span><br>
+
+                    <el-tag>{{ typeof analyticDialog.averagePricePerClick === 'number' ? analyticDialog.averagePricePerClick.toFixed(2) : analyticDialog.averagePricePerClick}}</el-tag>
                 </el-col>
 
             </el-row>
@@ -229,7 +235,8 @@
                     devices: {},
                     uidOpenCount : 0,
                     uidNotOpenCount: 0,
-                    conversionData:{}
+                    conversionData:{},
+                    averagePricePerClick : 0
                 }
             }
         },
@@ -242,7 +249,7 @@
                 if(withConv+withoutConv === 0)
                     return 0;
 
-                return 100*withConv/(withConv+withoutConv);
+                return (100*withConv/(withConv+withoutConv));
             },
             getRequests(uid_ids) {
                 if (uid_ids.trim() !== "") {
@@ -262,7 +269,7 @@
             },
             getClickThroughRate(record_id){
                 axios.get('/api/analytics/clickThroughRate/' + record_id + '?' + this.getFromTo(this.dateRang) ).then(response => {
-                    this.analyticDialog.conversionData=response.data[0];
+                    this.analyticDialog.conversionData=response.data;
                 }).catch(reason => {
                     this.$message.error('Ошибка получения click-through-rate');
                 });
@@ -273,7 +280,7 @@
             },
             getAllAnalytics(record_id) {
                 axios.get('/api/analytics/devices/' + record_id + '/all?' + this.getFromTo(this.dateRang)).then(response => {
-                    this.analyticDialog.commonData = response.data[0];
+                    this.analyticDialog.commonData = response.data;
                     this.analyticDialog.visible = true;
                 }).catch(reason => {
                     this.$message.error("Ошибка");
@@ -281,22 +288,31 @@
             },
             getDevicesAnalytics(record_id) {
                 axios.get('/api/analytics/devices/' + record_id + '/rating?'+this.getFromTo(this.dateRang)).then(response => {
-                    this.analyticDialog.devices = response.data[0];
+                    this.analyticDialog.devices = response.data;
                 }).catch(reason => {
                     this.$message.error('Ошибка получения аналитики по девайсам');
                 });
             },
             getOpenCount(record_id){
                 axios.get('/api/analytics/uids/'+record_id+'/openCount?'+ this.getFromTo(this.dateRang)).then(response => {
-                    this.analyticDialog.uidOpenCount=response.data[0].count;
+                    this.analyticDialog.uidOpenCount=response.data.count;
                 }).catch(reason => {
                     this.$message.error("Ошибка");
                 });
                 axios.get('/api/analytics/uids/'+record_id+'/notOpenCount?'+ this.getFromTo(this.dateRang)).then(response => {
-                    this.analyticDialog.uidNotOpenCount=response.data[0].count;
+                    this.analyticDialog.uidNotOpenCount=response.data.count;
                 }).catch(reason => {
                     this.$message.error("Ошибка");
                 });
+            },
+            getAveragePricePerClick(record_id){
+                axios.get('/api/analytics/averagePricePerClick/'+record_id+'?' + this.getFromTo(this.dateRang))
+                    .then(response => {
+                        this.analyticDialog.averagePricePerClick=response.data.pricePerClick;
+                    }).catch(reason => {
+                        this.$message.error('Ошибка получения средней цены клика');
+                    }
+                );
             },
             getAnalytics(record_id) {
                 this.analyticDialog.isLoading = true;
@@ -304,6 +320,7 @@
                 this.getDevicesAnalytics(record_id);
                 this.getOpenCount(record_id);
                 this.getClickThroughRate(record_id);
+                this.getAveragePricePerClick(record_id);
                 axios.get('/api/analytics/devices/' + record_id + '?' + this.getFromTo(this.dateRang)).then(response => {
                     this.analyticDialog.isLoading = false;
                     this.analyticDialog.data = response.data;

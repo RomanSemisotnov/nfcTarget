@@ -62,7 +62,11 @@ Route::group(['middleware' => 'jwt.auth'], function ($router) {
         });
 
         Route::group(['prefix' => 'clickThroughRate'], function ($router) {
-            Route::get('/{record_id}', 'clickThroughRateController@get');
+            Route::get('/{record_id}', 'ClickThroughRateController@get');
+        });
+
+        Route::group(['prefix' => 'averagePricePerClick'], function ($router) {
+            Route::get('/{record_id}', 'AveragePricePerClickController@get');
         });
 
     });
