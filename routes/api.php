@@ -61,6 +61,10 @@ Route::group(['middleware' => 'jwt.auth'], function ($router) {
             Route::get('/{record_id}/notOpenCount', 'UidsAnalyticsController@getNotOpenCount');
         });
 
+        Route::group(['prefix' => 'clickThroughRate'], function ($router) {
+            Route::get('/{record_id}', 'clickThroughRateController@get');
+        });
+
     });
 
     Route::group(['prefix' => 'excelAnalytics'], function ($router) {

@@ -126,13 +126,21 @@
             <el-row style="margin-top:20px">
 
                 <el-col :span="10" :offset="2">
-                    <span>Меток всего:</span>
+                    <span>Меток всего:</span><br>
                     <el-button-group>
                         <el-button size="small" type="success" plain round>{{'Открыто: '+analyticDialog.uidOpenCount}}
                         </el-button>
                         <el-button size="small" type="danger" plain round>{{'Не открыто: '+analyticDialog.uidNotOpenCount}}
                         </el-button>
                     </el-button-group>
+                </el-col>
+
+                <el-col :span="8" :offset="1">
+                    <span>Сlick-through rate</span><br>
+
+                    <el-tag>{{analyticDialog.conversionData.withConversion}}/{{analyticDialog.conversionData.withConversion+analyticDialog.conversionData.withoutConversion}}
+                    ({{' '+getConversionPersent(analyticDialog.conversionData.withConversion,analyticDialog.conversionData.withoutConversion)+'% '}})
+                    </el-tag>
                 </el-col>
 
             </el-row>
@@ -220,7 +228,8 @@
                     isLoading: false,
                     devices: {},
                     uidOpenCount : 0,
-                    uidNotOpenCount: 0
+                    uidNotOpenCount: 0,
+                    conversionData:{}
                 }
             }
         },
@@ -229,6 +238,12 @@
             this.getRecords();
         },
         methods: {
+            getConversionPersent(withConv,withoutConv){
+                if(withConv+withoutConv === 0)
+                    return 0;
+
+                return 100*withConv/(withConv+withoutConv);
+            },
             getRequests(uid_ids) {
                 if (uid_ids.trim() !== "") {
                     axios.get('/api/uid/' + uid_ids + '?with=correctrequests&' + this.getFromTo(this.dateRang)).then(response => {
@@ -244,6 +259,13 @@
                         this.$message.error("Ошибка получения дат");
                     });
                 }
+            },
+            getClickThroughRate(record_id){
+                axios.get('/api/analytics/clickThroughRate/' + record_id + '?' + this.getFromTo(this.dateRang) ).then(response => {
+                    this.analyticDialog.conversionData=response.data[0];
+                }).catch(reason => {
+                    this.$message.error('Ошибка получения click-through-rate');
+                });
             },
             closeAnalyticDialog() {
                 this.analyticDialog.data = [];
@@ -281,6 +303,7 @@
                 this.getAllAnalytics(record_id);
                 this.getDevicesAnalytics(record_id);
                 this.getOpenCount(record_id);
+                this.getClickThroughRate(record_id);
                 axios.get('/api/analytics/devices/' + record_id + '?' + this.getFromTo(this.dateRang)).then(response => {
                     this.analyticDialog.isLoading = false;
                     this.analyticDialog.data = response.data;
