@@ -50,8 +50,22 @@
 
                     <el-table-column
                             prop="priceOneTag"
-                            label="Цена"
+                            label="Цена(1)"
                             width="100">
+                    </el-table-column>
+
+                    <el-table-column
+                            prop="needLinks"
+                            label="Меток"
+                            width="100">
+                    </el-table-column>
+
+                    <el-table-column
+                            label="Цена(за все)"
+                            width="150">
+                        <template slot-scope="scope">
+                            {{scope.row.priceOneTag * scope.row.needLinks}}
+                        </template>
                     </el-table-column>
 
                     <el-table-column
@@ -70,6 +84,7 @@
             </el-col>
         </el-row>
 
+        <!--
         <el-row style="padding-top:13px;">
             <el-col :offset="1" :span="6" v-for="(param,ind) in client.params" :key="ind">
                 <el-card class="box-card">
@@ -86,7 +101,7 @@
 
                 </el-card>
             </el-col>
-        </el-row>
+        </el-row> -->
 
 
         <el-dialog
@@ -138,15 +153,28 @@
                 <el-col :span="3" :offset="1">
                     <span>Сlick-through rate</span><br>
 
-                    <el-tag>{{analyticDialog.conversionData.withConversion}}/{{analyticDialog.conversionData.withConversion+analyticDialog.conversionData.withoutConversion}}
-                    ({{' '+getConversionPersent(analyticDialog.conversionData.withConversion,analyticDialog.conversionData.withoutConversion).toFixed(1)+'% '}})
-                    </el-tag>
+                    <el-popover
+                            placement="top-start"
+                            width="350"
+                            trigger="hover"
+                            content="Количество запусков с переходом после просмотра рекламы / Общее количество запусков">
+
+                        <el-tag slot="reference">{{analyticDialog.conversionData.withConversion}}/{{analyticDialog.conversionData.withConversion+analyticDialog.conversionData.withoutConversion}}
+                            ({{' '+getConversionPersent(analyticDialog.conversionData.withConversion,analyticDialog.conversionData.withoutConversion).toFixed(1)+'% '}})
+                        </el-tag>
+                    </el-popover>
                 </el-col>
 
                 <el-col :span="5" :offset="1">
                     <span>Средняя цена клика</span><br>
 
-                    <el-tag>{{analyticDialog.averagePricePerClick}}</el-tag>
+                    <el-popover
+                            placement="top-start"
+                            width="350"
+                            trigger="hover"
+                            content="Стоимость партии % Количество запусков с переходом после просмотра рекламы">
+                        <el-tag slot="reference">{{analyticDialog.averagePricePerClick}}</el-tag>
+                    </el-popover>
                 </el-col>
 
             </el-row>
