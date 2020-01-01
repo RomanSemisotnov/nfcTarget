@@ -69,10 +69,10 @@ Route::group(['middleware' => 'jwt.auth'], function ($router) {
             Route::get('/{record_id}', 'AveragePricePerClickController@get');
         });
 
-    });
+        Route::group(['prefix' => 'excel'], function ($router) {
+            Route::get('/{records_ids}', 'ExcelAnalyticsController@get');
+        });
 
-    Route::group(['prefix' => 'excelAnalytics'], function ($router) {
-        Route::get('/', 'ExcelAnalyticsController@get');
     });
 
     Route::group(['prefix' => 'uid'], function ($router) {

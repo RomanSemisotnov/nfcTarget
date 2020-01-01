@@ -25,17 +25,23 @@
             </el-col>
 
             <el-col :offset="1" :span="6">
-                <el-button @click="unloading">Выгрузить статистику</el-button>
+                <el-button @click="unloading">Выгрузить в Excel</el-button>
             </el-col>
         </el-row>
 
         <el-row style="padding-top:13px;">
             <el-col :offset="3" :span="19">
                 <el-table
+                        ref="multipleTable"
                         :loading="records.isLoading"
                         :data="records.data"
+                        @selection-change="addRecordToSet"
                         style="width: 100%">
 
+                    <el-table-column
+                            type="selection"
+                            width="55">
+                    </el-table-column>
                     <el-table-column
                             prop="id"
                             label="#"
@@ -255,6 +261,7 @@
                     isLoading: true,
                     data: []
                 },
+                recordSet: [],
                 analyticDialog: {
                     visible: false,
                     data: [],
@@ -390,14 +397,22 @@
                     return "";
                 return 'from=' + dateRang[0] + '&to=' + dateRang[1];
             },
+            addRecordToSet(val){
+                this.recordSet=val;
+            },
             unloading() {
-                axios.get('/api/excelAnalytics?client_id=' + this.client.id + '?' +
-                    this.getFromTo(this.dateRang)
-                        .then(response => {
+                let record_ids=[];
+                this.recordSet.forEach(value => {
+                    record_ids.push(value.id);
+                });
 
-                        }).catch(reason => {
+                axios.get('/api/analytics/excel/' + record_ids.join(', ') + '?' +
+                    this.getFromTo(this.dateRang))
+                    .then(response => {
 
-                    }));
+                    }).catch(reason => {
+                        this.$message.error('Ошибка получения excel файла');
+                });
             },
             async getClient() {
                 await axios.get('/api/client/' + this.$route.params.name).then(response => {
