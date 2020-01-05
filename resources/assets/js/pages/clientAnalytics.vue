@@ -25,7 +25,7 @@
             </el-col>
 
             <el-col :offset="1" :span="6">
-                <el-button @click="unloading">Выгрузить в Excel</el-button>
+                <el-button :disabled="recordSet.length === 0" @click="unloading">Выгрузить в Excel</el-button>
             </el-col>
         </el-row>
 
@@ -330,12 +330,12 @@
             },
             getOpenCount(record_id){
                 axios.get('/api/analytics/uids/'+record_id+'/openCount?'+ this.getFromTo(this.dateRang)).then(response => {
-                    this.analyticDialog.uidOpenCount=response.data.count;
+                    this.analyticDialog.uidOpenCount=response.data;
                 }).catch(reason => {
                     this.$message.error("Ошибка");
                 });
                 axios.get('/api/analytics/uids/'+record_id+'/notOpenCount?'+ this.getFromTo(this.dateRang)).then(response => {
-                    this.analyticDialog.uidNotOpenCount=response.data.count;
+                    this.analyticDialog.uidNotOpenCount=response.data;
                 }).catch(reason => {
                     this.$message.error("Ошибка");
                 });
@@ -343,7 +343,7 @@
             getAveragePricePerClick(record_id){
                 axios.get('/api/analytics/averagePricePerClick/'+record_id+'?' + this.getFromTo(this.dateRang))
                     .then(response => {
-                        this.analyticDialog.averagePricePerClick=response.data.pricePerClick;
+                        this.analyticDialog.averagePricePerClick=response.data;
                     }).catch(reason => {
                         this.$message.error('Ошибка получения средней цены клика');
                     }
@@ -406,10 +406,15 @@
                     record_ids.push(value.id);
                 });
 
-                axios.get('/api/analytics/excel/' + record_ids.join(', ') + '?' +
-                    this.getFromTo(this.dateRang))
+                axios({ url:'/api/analytics/excel/' + record_ids.join(', ') + '?' +
+                    this.getFromTo(this.dateRang), method: 'get', responseType: 'arraybuffer'})
                     .then(response => {
-
+                        const url = window.URL.createObjectURL( new Blob([response.data]));
+                        const link = document.createElement('a');
+                        link.href = url;
+                        link.setAttribute( 'download' , 'analytics.xlsx');
+                        document.body.appendChild(link);
+                        link.click();
                     }).catch(reason => {
                         this.$message.error('Ошибка получения excel файла');
                 });
