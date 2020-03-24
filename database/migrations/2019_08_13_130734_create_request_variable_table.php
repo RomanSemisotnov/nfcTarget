@@ -26,6 +26,15 @@ class CreateRequestVariableTable extends Migration
                 ->references('id')->on('param_variables')
                 ->onDelete('cascade');
         });
+        Schema::create('coords', function (Blueprint $table) {
+            $table->increments('id');
+
+            $table->string('first');
+            $table->string('second');
+            $table->string('ip');
+
+            $table->timestamps();
+        });
     }
 
     /**
@@ -36,5 +45,6 @@ class CreateRequestVariableTable extends Migration
     public function down()
     {
         Schema::dropIfExists('request_variable');
+        Schema::dropIfExists('coords');
     }
 }
