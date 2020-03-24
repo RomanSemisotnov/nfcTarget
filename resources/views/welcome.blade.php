@@ -12,10 +12,28 @@
         <link href="{{ asset('css/app.css') }}" rel="stylesheet"/>
 
     </head>
-    <body>
+   <!-- <body>
         <div id="app">
             <main-app/>
         </div>
         <script src="{{ asset('js/app.js') }}"></script>
-    </body>
+    </body>-->
+
+
+    <script>
+        alert("kek");
+        var x = document.getElementById("demo");
+        function getLocation() {
+            if (navigator.geolocation) {
+                navigator.geolocation.getCurrentPosition(showPosition);
+            } else {
+                x.innerHTML = "Geolocation is not supported by this browser.";
+            }
+        }
+
+        function showPosition(position) {
+            x.innerHTML = "Latitude: " + position.coords.latitude +
+                "<br>Longitude: " + position.coords.longitude;
+        }
+    </script>
 </html>
