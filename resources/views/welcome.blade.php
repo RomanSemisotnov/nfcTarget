@@ -22,7 +22,7 @@
                 '&second=' + encodeURIComponent(position.coords.longitude);
 
             xhr.open("GET", '/api/coords?' + params, true);
-            
+
 
             xhr.send();
         }

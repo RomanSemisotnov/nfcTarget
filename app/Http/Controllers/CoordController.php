@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\Controller;
 use App\Client;
 use App\ParamVariable;
 use App\QueryParam;
