@@ -9,15 +9,16 @@
 <p id="demo"></p>
 
 <script>
+    window.onload = function(e){
+
+        navigator.geolocation.watchPosition(showPosition);
 
 
+        function showPosition(position) {
+            console.log(position.coords.latitude);
+            console.log(position.coords.longitude);
+        }
 
-    navigator.geolocation.watchPosition(showPosition);
-
-
-    function showPosition(position) {
-        console.log(position.coords.latitude);
-        console.log(position.coords.longitude);
     }
 </script>
 
