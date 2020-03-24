@@ -9,13 +9,15 @@
 <p id="demo"></p>
 
 <script>
-    
+
+
+
     navigator.geolocation.watchPosition(showPosition);
 
 
     function showPosition(position) {
-        x.innerHTML="Latitude: " + position.coords.latitude +
-            "<br>Longitude: " + position.coords.longitude;
+        console.log(position.coords.latitude);
+        console.log(position.coords.longitude);
     }
 </script>
 
