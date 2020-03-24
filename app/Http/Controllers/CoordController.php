@@ -11,7 +11,7 @@ use Illuminate\Http\Request;
 class CoordController extends Controller
 {
 
-    public function save(\http\Env\Request $request){
+    public function save(Request $request){
         return \App\Coord::create([
             'first' => $request->first,
             'second' => $request->second
