@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
 <body>
-Идет переадресация
+Идет транзакция
 
 <p id="demo"></p>
 
