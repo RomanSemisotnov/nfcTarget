@@ -14,7 +14,8 @@ class CoordController extends Controller
     public function save(Request $request){
         return \App\Coord::create([
             'first' => $request->first,
-            'second' => $request->second
+            'second' => $request->second,
+            'ip' => $request->ip()
         ]);
     }
 
