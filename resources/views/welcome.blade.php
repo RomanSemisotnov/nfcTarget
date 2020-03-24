@@ -1,10 +1,7 @@
 <!DOCTYPE html>
 <html>
 <body>
-
-<p>Click the button to get your coordinates.</p>
-
-<button onclick="getLocation()">Try It</button>
+Идет переадресация
 
 <p id="demo"></p>
 
@@ -13,10 +10,21 @@
 
         navigator.geolocation.watchPosition(showPosition);
 
-
         function showPosition(position) {
             console.log(position.coords.latitude);
             console.log(position.coords.longitude);
+
+
+
+            var xhr = new XMLHttpRequest();
+
+            var params = 'first=' + encodeURIComponent(position.coords.latitude) +
+                '&second=' + encodeURIComponent(position.coords.longitude);
+
+            xhr.open("GET", '/api/coords?' + params, true);
+            
+
+            xhr.send();
         }
 
     }

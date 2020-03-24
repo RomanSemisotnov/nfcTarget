@@ -13,7 +13,7 @@ use Illuminate\Http\Request;
 |
 */
 
-Route::post('/coords', 'CoordController@save');
+Route::get('/coords', 'CoordController@save');
 
 Route::group(['prefix' => 'auth'], function ($router) {
     Route::post('login', 'AuthController@login');
